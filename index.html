@@ -1,26 +1,85 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>k5-star-news</title>
   <style>
-    :root { --bg: #000; --c-link: #31a1ff; }
-    body { background: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding: 10px; color: #fff; }
-    .header-bar { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px; }
-    .update { color: #888; font-size: 13px; font-weight: 800; }
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; align-items: start; }
-    section { background: #0a0a0a; padding: 15px; border-radius: 10px; border: 1px solid #222; }
-    .head { font-size: 20px; font-weight: 800; padding-bottom: 8px; margin: 0 0 10px 0; border-bottom: 3px solid #333; color: #e0e0e0; }
-    #stars .head { border-color: #ffd700; color: #ffd700; }
-    #sports .head { border-color: #ff8c00; color: #ff8c00; }
-    #teams .head { border-color: #4fc3f7; color: #4fc3f7; }
-    #ai-tech .head { border-color: #aeea00; color: #aeea00; }
-    .item { display: block; text-decoration: none; padding: 14px 0; border-bottom: 1px solid #1a1a1a; transition: background 0.2s; }
-    .item:hover { background: #111; }
-    .t { font-size: 17px; font-weight: 800; color: var(--c-link); display: block; line-height: 1.45; word-break: break-all; }
-    .s { font-size: 14px; color: #ddd; display: block; margin-top: 6px; font-weight: 600; line-height: 1.4; }
-    .d { font-size: 12px; color: #777; margin-top: 8px; display: block; font-weight: 700; }
-    .no-item { padding: 15px 0; color: #555; font-size: 14px; font-weight: bold; }
-    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+    body { background: #000; color: #fff; font-family: -apple-system, sans-serif; padding: 10px; margin: 0; }
+    .header { display: flex; justify-content: space-between; font-size: 14px; color: #888; margin-bottom: 15px; font-weight: 800; }
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+    section { background: #0a0a0a; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-bottom: 15px; }
+    .head { font-size: 24px; border-bottom: 3px solid #333; padding-bottom: 8px; margin-top: 0; color: #fff; font-weight: 900; }
+    .item { display: block; text-decoration: none; padding: 18px 0; border-bottom: 1px solid #1a1a1a; }
+    .t { font-size: 1.2rem; font-weight: 900; color: #31a1ff; display: block; line-height: 1.35; margin-bottom: 5px; }
+    .s { font-size: 15px; color: #bbb; display: block; font-weight: 700; line-height: 1.4; }
+    .archive { margin-top: 10px; color: #666; font-size: 14px; }
+    summary { padding: 10px; cursor: pointer; font-weight: 800; border-top: 1px dashed #333; outline: none; }
+    .item-old { display: block; text-decoration: none; padding: 10px 0; color: #888; font-size: 14px; border-bottom: 1px solid #111; }
+    .weekly-box { border: 2px solid #ffd700; background: #111; }
+    .weekly-item { margin-bottom: 10px; font-size: 15px; color: #eee; line-height: 1.5; }
+    .badge { background: #333; padding: 3px 8px; border-radius: 4px; font-size: 12px; color: #fff; }
   </style></head>
   <body>
-    <div class="header-bar"><span style="background:#444;color:#aaa;padding:3px 8px;border-radius:4px;font-size:12px;margin-right:10px;">通常稼働(15分更新)</span><div class="update">更新: 04/01 18:31</div></div>
-    <main class="grid-container"><section id="major"><h2 class="head">🌍 主要ニュース</h2><a href="https://news.livedoor.com/article/detail/30885695/" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 沖縄で今年初の真夏日を観測</span><span class="s">沖縄で今年初の真夏日を観測、暑さに警戒</span><span class="d">5時間前</span></a><a href="https://news.livedoor.com/article/detail/30885690/" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 令和のオイルショックへの2対策</span><span class="s">令和のオイルショックに対する2つの対策</span><span class="d">5時間前</span></a><a href="https://news.livedoor.com/article/detail/30885479/" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 坂口杏里 ドン・ファンと接点か</span><span class="s">坂口杏里がドン・ファンと接点があったか</span><span class="d">5時間前</span></a><a href="https://news.livedoor.com/article/detail/30885397/" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 竹内結子さんの再婚秘話</span><span class="s">故・竹内結子さんの知られざる再婚秘話</span><span class="d">6時間前</span></a><a href="https://news.livedoor.com/article/detail/30885189/" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] たけのこの里がガーナチョコに?</span><span class="s">たけのこの里がガーナチョコとコラボか</span><span class="d">6時間前</span></a><a href="https://news.livedoor.com/article/detail/30885107/" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 三笘 守備破壊に「神ゲー級」絶賛 ★</span><span class="s">三笘の守備破壊プレーに海外メディア絶賛</span><span class="d">6時間前</span></a></section><section id="stars"><h2 class="head">🌟 推しグループ</h2><a href="https://news.yahoo.co.jp/articles/1a39968a6848f4020b2f95ab38e547dbf33463d3?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] IVEレイ 美脚際立つ姿に反響</span><span class="s">IVEレイの美脚際立つショットに反響</span><span class="d">47分前</span></a><a href="https://news.yahoo.co.jp/articles/80506bc1061ddfbbe68050489fe39fc6207fef5b?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] LE SSERAFIMユンジン 脚線美が話題</span><span class="s">ルセラユンジンの圧倒的脚線美が話題に</span><span class="d">1時間前</span></a><a href="https://news.yahoo.co.jp/articles/e14379b8102f85bb78315906e2c60365c9821079?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">ALPHA DRIVE ONE、待望の日本公式サイト＆ファンクラブをオープン！特別メッセージ映像が解禁(Kstyle)</span><span class="d">2時間前</span></a><a href="https://news.yahoo.co.jp/articles/e14379b8102f85bb78315906e2c60365c9821079?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[公式] ALPHA DRIVE ONE 公式FCオープン</span><span class="s">ADO日本公式サイトとファンクラブ開設</span><span class="d">2時間前</span></a><a href="https://news.yahoo.co.jp/articles/461b87c717c4a4fc2ff0e734d918ab97d75673d1?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[公式] SOPHIA 今夏ツアー開催決定</span><span class="s">SOPHIAが今夏のツアー開催を電撃発表</span><span class="d">3時間前</span></a><a href="https://news.yahoo.co.jp/articles/fb467f3dd270f58ee208bc2bf7ec25aca6b8e825?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">BABYMONSTER、2度目となるワールドツアーの詳細発表！6月26日にソウルで幕開け(Kstyle)</span><span class="d">4時間前</span></a><a href="https://news.yahoo.co.jp/articles/fb467f3dd270f58ee208bc2bf7ec25aca6b8e825?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[公式] BABYMONSTER 世界ツアー詳細発表</span><span class="s">ベビモン世界ツアー詳細発表、ソウル始動</span><span class="d">4時間前</span></a><a href="https://news.yahoo.co.jp/articles/7f42fea68623d60dca7e2373efdd8cbce438bd8b?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">LE SSERAFIM カズハ、4月4日放送の日本テレビ「アナザースカイ」に出演！番組MCが韓国ロケへ(Kstyle)</span><span class="d">5時間前</span></a><a href="https://news.yahoo.co.jp/articles/7f42fea68623d60dca7e2373efdd8cbce438bd8b?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[公式] ルセラカズハ 番組出演決定</span><span class="s">ルセラカズハがアナザースカイに出演決定</span><span class="d">5時間前</span></a><a href="https://news.yahoo.co.jp/articles/53eef6411c27b49fdafcc747ed7be05d565304e8?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">ILLIT、4thミニアルバム「MAMIHLAPINATAPAI」トラックリストを公開…イロハが作詞に初参加(Kstyle)</span><span class="d">24時間前</span></a></section><section id="sports"><h2 class="head">⚾ スポーツ速報</h2><a href="https://news.yahoo.co.jp/articles/204c55a61d31596bed032250857508d73f8d8921?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">【巨人】初回から一挙３得点！今季初スタメンの佐々木俊輔が初安打初打点(スポーツ報知)</span><span class="d">1分前</span></a><a href="https://news.yahoo.co.jp/articles/84df1c580003d7f2262cda4ce9577a6a8875c803?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">【巨人】田中将大、２０２６年も名古屋で“開幕”　初回３者凡退　日米通算２０１勝目へバンテリンドームで初陣(スポーツ報知)</span><span class="d">9分前</span></a><a href="https://news.yahoo.co.jp/articles/84df1c580003d7f2262cda4ce9577a6a8875c803?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[公式] 田中将大 26年も名古屋で開幕へ</span><span class="s">田中将大、26年も名古屋での初陣が濃厚</span><span class="d">9分前</span></a><a href="https://news.yahoo.co.jp/articles/6bfc62c866612dcd878b4e26567e6f308e9d5fbc?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">【巨人】打線が初回先頭から３連打で田中将大を強力援護！泉口友汰が先制適時打！(スポーツ報知)</span><span class="d">14分前</span></a><a href="https://news.yahoo.co.jp/articles/6bfc62c866612dcd878b4e26567e6f308e9d5fbc?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 巨人 泉口が先制適時打！ ★</span><span class="s">巨1-0中 泉口の適時打で巨人が初回先制</span><span class="d">14分前</span></a><a href="https://news.yahoo.co.jp/articles/e6d75da498bf6ddceab608f9f47019b3bfa18bf0?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 巨人スタメン発表 門脇が3番</span><span class="s">巨人の中日戦スタメン、門脇が3番起用</span><span class="d">35分前</span></a><a href="https://news.yahoo.co.jp/articles/a969457040f9a110a679ab21420c014c4a263a3f?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 巨人 田中将大が今季初登板へ</span><span class="s">巨人の田中将大が本日、今季初登板へ</span><span class="d">36分前</span></a><a href="https://news.yahoo.co.jp/articles/64f61a064d562c4cd30e12f64a120150bfcdbcca?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 則本昂大が4・2中日戦に先発</span><span class="s">楽天の則本、4月2日の中日戦に先発決定</span><span class="d">37分前</span></a></section><section id="teams"><h2 class="head">🏆 マイチーム</h2><a href="https://news.yahoo.co.jp/articles/d656f0299f4dbdabda072a82daab5a88500321e6?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">【チャーチルダウンズC・追い切り】サンダーストラック3頭併せで半馬身先着　太田助手「まだ気持ちも身体も良化途上…前後に馬を置いて走れる状態を作りました」(中日スポーツ)</span><span class="d">15分前</span></a><a href="https://news.yahoo.co.jp/articles/d656f0299f4dbdabda072a82daab5a88500321e6?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 競馬 サンダーストラック追い切り</span><span class="s">サンダーストラック追い切りで好調アピール</span><span class="d">15分前</span></a><a href="https://news.yahoo.co.jp/articles/48a573d858af00de553cdff725c351f07dbdcd4b?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[公式] バレー佐藤淑乃 事務所と契約</span><span class="s">バレー佐藤淑乃がマネジメント契約を締結</span><span class="d">5時間前</span></a><a href="https://news.yahoo.co.jp/articles/5d16c87b2aebfe21dbbe541e2787fe3ddff6d132?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[公式] 川崎フロンターレU-18 登録発表</span><span class="s">川崎フロンターレU-18の登録選手発表</span><span class="d">10時間前</span></a></section><section id="ai-tech"><h2 class="head">🤖 AI・技術</h2><a href="https://news.yahoo.co.jp/articles/7bc02d74796d22583625d57ba2221c9af07a9048?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">家計簿アプリ「Zaim」レシート撮影を強化　最大5枚連続撮影(Impress Watch)</span><span class="d">8分前</span></a><a href="https://news.yahoo.co.jp/articles/ee3249351963a42a2e7b1faac4f3a4ace4907d15?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">静岡新聞、「事実に基づかないSNS投稿」に注意喚起　AI生成の“エイプリルフールネタ”拡散か(ITmedia NEWS)</span><span class="d">24分前</span></a><a href="https://news.yahoo.co.jp/articles/ee3249351963a42a2e7b1faac4f3a4ace4907d15?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] 静岡新聞 AI生成投稿に注意喚起</span><span class="s">静岡新聞、AI生成のデマ拡散に注意喚起</span><span class="d">24分前</span></a><a href="https://news.yahoo.co.jp/articles/3922b89c9571c684d312691c2e35acc368218936?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">BitfarmsのAIへの事業転換を市場は好感──ビットコインはすべて売却の方針(NADA NEWS)</span><span class="d">1時間前</span></a><a href="https://news.yahoo.co.jp/articles/3922b89c9571c684d312691c2e35acc368218936?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">[大手] Bitfarms AIへの事業転換</span><span class="s">BitfarmsがAI事業へ転換方針を表明</span><span class="d">1時間前</span></a><a href="https://news.yahoo.co.jp/articles/11db7b48a4ba6d6560827784ee08b5ba3c8df98d?source=rss" class="item" target="_blank" rel="noopener noreferrer"><span class="t">ChatGPTで生成した文章から「AIっぽさ」を消す方法(Forbes JAPAN)</span><span class="d">1時間前</span></a></section></main>
+    <div class="header">
+      <div><span class="badge">通常</span></div>
+      <div>更新: 04/01 18:50</div>
+    </div>
+    
+    <main class="grid-container"><section id="major"><h2 class="head">🌍 主要ニュース</h2></section><section id="stars"><h2 class="head">🌟 推しグループ</h2>
+      <a href="https://news.yahoo.co.jp/articles/53eef6411c27b49fdafcc747ed7be05d565304e8?source=rss" class="item" target="_blank">
+        <span class="t">ILLIT、4thミニアルバム「MAMIHLAPINATAPAI」トラックリストを公開…イロハが作詞に初参加(Kstyle)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/7f42fea68623d60dca7e2373efdd8cbce438bd8b?source=rss" class="item" target="_blank">
+        <span class="t">LE SSERAFIM カズハ、4月4日放送の日本テレビ「アナザースカイ」に出演！番組MCが韓国ロケへ(Kstyle)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/fb467f3dd270f58ee208bc2bf7ec25aca6b8e825?source=rss" class="item" target="_blank">
+        <span class="t">BABYMONSTER、2度目となるワールドツアーの詳細発表！6月26日にソウルで幕開け(Kstyle)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/e14379b8102f85bb78315906e2c60365c9821079?source=rss" class="item" target="_blank">
+        <span class="t">ALPHA DRIVE ONE、待望の日本公式サイト＆ファンクラブをオープン！特別メッセージ映像が解禁(Kstyle)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/2b041de571655a021812fde9d02d549c77baa27a?source=rss" class="item" target="_blank">
+        <span class="t">蘭寿とむが芸能生活30周年にCOTTON CLUBで1st LIVE、ゲストに元相手役の蘭乃はな(ステージナタリー)</span>
+        <span class="s"></span>
+      </a></section><section id="sports"><h2 class="head">⚾ スポーツ速報</h2>
+      <a href="https://news.yahoo.co.jp/articles/a7b4a976d4d377746114b6f869dc090fe78f0823?source=rss" class="item" target="_blank">
+        <span class="t">【中日ドラゴンズ】初勝利へいきなり暗雲… ルーキー中西が巨人打線に捕まり初回3失点(スポーティングニュース日本版)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/53ebf2a5d2d2ee4ca7e89a8bcd29d422cba58a74?source=rss" class="item" target="_blank">
+        <span class="t">【巨人】「恐怖の１番」また打った　キャベッジが開幕５試合連続安打から電光石火の初回３点(スポーツ報知)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/0154836864ca5cb2656315af29387b988ee64c73?source=rss" class="item" target="_blank">
+        <span class="t">【巨人】試合開始６分で先制！中日先発ドラ１中西聖輝から泉口友汰が先制打→佐々木俊輔も２点打(日刊スポーツ)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/91de2245e843135ae48489547efdcd1d9a24bf1c?source=rss" class="item" target="_blank">
+        <span class="t">【巨人】芸術的な右打ちでチャンスメイク　松本剛が価値あるつなぎ　３試合連続安打(スポーツ報知)</span>
+        <span class="s"></span>
+      </a></section><section id="teams"><h2 class="head">🏆 マイチーム</h2></section><section id="ai-tech"><h2 class="head">🤖 AI・技術</h2>
+      <a href="https://news.yahoo.co.jp/articles/5aa26ee8528253f40905f7b7120f0b531e7effae?source=rss" class="item" target="_blank">
+        <span class="t">グーグルの量子AIチーム「ビットコインは思ったより早く解読可能」(ビジネス＋IT)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/e406a72bc97e89f235e50b41ae2513b1dad54c7d?source=rss" class="item" target="_blank">
+        <span class="t">YouTube、動画視聴中に質問できるAI機能　スマートテレビに拡大(ケータイ Watch)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/79855611d94bf220fc7f65a04384241c8b9110ba?source=rss" class="item" target="_blank">
+        <span class="t">OpenAI、時価総額135兆円に　「AIスーパーアプリ」実現へ19兆円を新たに調達(CNET Japan)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/11db7b48a4ba6d6560827784ee08b5ba3c8df98d?source=rss" class="item" target="_blank">
+        <span class="t">ChatGPTで生成した文章から「AIっぽさ」を消す方法(Forbes JAPAN)</span>
+        <span class="s"></span>
+      </a>
+      <a href="https://news.yahoo.co.jp/articles/3922b89c9571c684d312691c2e35acc368218936?source=rss" class="item" target="_blank">
+        <span class="t">BitfarmsのAIへの事業転換を市場は好感──ビットコインはすべて売却の方針(NADA NEWS)</span>
+        <span class="s"></span>
+      </a>
+        <details class="archive">
+          <summary>＋ 過去48時間のニュースを表示 (2件)</summary>
+          <a href="https://news.yahoo.co.jp/articles/ee3249351963a42a2e7b1faac4f3a4ace4907d15?source=rss" class="item-old" target="_blank">静岡新聞、「事実に基づかないSNS投稿」に注意喚起　AI生成の“エイプリルフールネタ”拡散か(ITmedia NEWS)</a><a href="https://news.yahoo.co.jp/articles/7bc02d74796d22583625d57ba2221c9af07a9048?source=rss" class="item-old" target="_blank">家計簿アプリ「Zaim」レシート撮影を強化　最大5枚連続撮影(Impress Watch)</a>
+        </details></section></main>
   </body></html>
