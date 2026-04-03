@@ -1,363 +1,148 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
+    :root { --bg: #050505; --card: #121212; --line: #222; }
+    body { background: var(--bg); color: #ccc; font-family: -apple-system, sans-serif; margin: 0; padding: 15px; }
+    
+    /* PCでは5列並び（画面幅に応じて自動調整） */
+    .container { display: grid; grid-template-columns: 1fr; gap: 15px; align-items: start; }
+    @media (min-width: 768px) { .container { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .container { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1400px) { .container { grid-template-columns: repeat(5, 1fr); } }
 
-  <!DOCTYPE html>
-  <html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>k5 News Center</title>
-    <style>
-      :root {
-        --bg-color: #0d0d0d;
-        --card-bg: #1a1a1a;
-        --text-main: #f5f5f5;
-        --text-sub: #aaa;
-        --border-color: #333;
-      }
-      body {
-        background-color: var(--bg-color);
-        color: var(--text-main);
-        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-        margin: 0; padding: 10px;
-      }
-      h1 { font-size: 1.5rem; text-align: center; margin-bottom: 20px; color: #fff; }
-      
-      /* PC・iPad用 タイルグリッドレイアウト */
-      .container {
-        display: grid;
-        grid-template-columns: 1fr; /* スマホ・Watchは1列 */
-        gap: 15px;
-      }
-      @media (min-width: 768px) {
-        .container { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        body { padding: 30px; }
-      }
+    .section { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid var(--line); }
 
-      /* セクション（枠）のデザイン */
-      .section {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 15px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-      }
-      /* セクションカラー（左端のアクセント） */
-      .sec-主要 { border-left: 4px solid #4a90e2; }
-      .sec-推し { border-left: 4px solid #e91e63; }
-      .sec-ブルージェイズ { border-left: 4px solid #00bcd4; }
-      .sec-巨人 { border-left: 4px solid #ff9800; }
-      .sec-マイチーム { border-left: 4px solid #4caf50; }
-      .sec-AI・技術 { border-left: 4px solid #9c27b0; }
+    /* ジャンルごとのテーマカラー（アイコン＆線） */
+    .sec-主要ニュース { border-top: 3px solid #3498db; } .head-主要ニュース { color: #3498db; }
+    .sec-推しグループ { border-top: 3px solid #e91e63; } .head-推しグループ { color: #e91e63; }
+    .sec-巨人 { border-top: 3px solid #f39c12; } .head-巨人 { color: #f39c12; }
+    .sec-マイチーム { border-top: 3px solid #00d2ff; } .head-マイチーム { color: #00d2ff; }
+    .sec-AI・技術 { border-top: 3px solid #9b59b6; } .head-AI・技術 { color: #9b59b6; }
 
-      .section-header {
-        display: flex; justify-content: space-between; align-items: center;
-        font-size: 1.2rem; font-weight: bold; margin-bottom: 15px;
-        border-bottom: 1px solid var(--border-color); padding-bottom: 5px;
-      }
-      .badge {
-        background: #d32f2f; color: white; font-size: 0.8rem;
-        padding: 2px 8px; border-radius: 10px; font-weight: normal;
-      }
-
-      /* 記事ブロック（Apple Watchでの区切り線を意識） */
-      .article {
-        display: block; text-decoration: none; color: inherit;
-        padding: 12px 0;
-        border-bottom: 1px solid var(--border-color);
-      }
-      .article:last-child { border-bottom: none; }
-      
-      /* タイトルと要約のメリハリ */
-      .title { font-size: 1.15rem; font-weight: bold; margin-bottom: 6px; line-height: 1.4; }
-      .summary { font-size: 0.95rem; color: var(--text-sub); line-height: 1.3; }
-
-      /* アコーディオン（折りたたみ） */
-      details { margin-top: 10px; }
-      summary {
-        color: #888; font-size: 0.9rem; cursor: pointer;
-        padding: 10px 0; text-align: center; background: #222; border-radius: 8px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>📌 k5 News Center</h1>
-    <div class="container">
-  
-      <div class="section sec-主要">
-        <div class="section-header">
-          <span>🌍 主要</span>
-          <span class="badge">🔴 8</span>
-        </div>
+    .header { font-size: 1rem; font-weight: bold; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 6px; }
+    .article { display: block; text-decoration: none; padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
+    .article:last-child { border-bottom: none; }
     
-        <a href="https://news.livedoor.com/article/detail/30899034/" target="_blank" class="article">
-          <div class="title">4月から自転車にも青切符 子どもを乗せた自転車は歩道走行は認められる？</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.livedoor.com/article/detail/30898322/" target="_blank" class="article">
-          <div class="title">毎日歯磨き、歯間ブラシでしっかりケアも…虫歯ができた理由</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.livedoor.com/article/detail/30897874/" target="_blank" class="article">
-          <div class="title">熱愛報道の黒田みゆアナ「夜更かし」「朝寝坊」発言に関係者ヒヤリ</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      <details><summary>＋ 残り 5 件を表示</summary>
-          <a href="https://news.livedoor.com/article/detail/30898689/" target="_blank" class="article">
-            <div class="title">西野亮廣が1億円の自宅マンション公開「こだわり」明かすも痛烈ツッコミ</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.livedoor.com/article/detail/30898477/" target="_blank" class="article">
-            <div class="title">ザ・ぼんち、漫才ブーム後の地獄明かす「月収0円、家族が路頭に」</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.livedoor.com/article/detail/30898647/" target="_blank" class="article">
-            <div class="title">トランプ氏が投稿「次は橋、そして発電所だ！」イランへの攻撃を示唆</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.livedoor.com/article/detail/30898643/" target="_blank" class="article">
-            <div class="title">石丸伸二氏、砂浜で「愛してる」告白シーンにスタジオ絶叫の事態</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.livedoor.com/article/detail/30897723/" target="_blank" class="article">
-            <div class="title">周知の事実なのに発表なし？和久田麻由子アナ、NHK退局の裏事情</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        </details></div>
-      <div class="section sec-推し">
-        <div class="section-header">
-          <span>🌟 推し</span>
-          <span class="badge">🔴 8</span>
-        </div>
-    
-        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5tNmczdEk0R1d0WGtFTlpzZFh4WlNLQ2lBY29ZZ1BlazdaZGR4LWpuMEFGMmxpWU9YRjZiLWxKamtMNkJkeHBUZnRvRXhzTU5xWEx6NTlEMXBIVHE0TWFQR01iQjRzMGtYOVJHcFRfbTdXTU9ibzNQdWhZNFpHa0U?oc=5" target="_blank" class="article">
-          <div class="title">IVE、日本4th EPの収録曲「Fashion」を本日先行配信リリース！前向きな歌詞やメロディに注目（Kstyle） - news.yahoo.co.jp</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMifEFVX3lxTE9NaDllZFpDeDc3YWdtQ3VjeDJpUU9ITDFsdGFsZXdYQXRTcWdTMFhZTm4xaE9ZLVlhRXJGSDN1VE5qQ0lsZVlxYl8zOGg0MFFRZFY3eHNhaVl6Yk1nN1VoWHFNSXJ0bGI3QkRTTE95OTZzRnB6RTU3aUg4V3I?oc=5" target="_blank" class="article">
-          <div class="title">IVE JAPAN 4th EP『LUCID DREAM』が5月27日(水)にリリース決定！ - e.usen.com</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFBreVB4dDFNV3ZmSGEyLWpCWUpTTUdjLUk4V3UtbUV3VnJLWWd5MjRxN0JBU28xMnhURThCYWc3aFBuaVJPMDNRNW9VMU9uRDhGbHfSAVRBVV95cUxOWjVBNEdlLWh1NG81bTQ0TUFMSTdHaXBVLWhTaEl4N1BwU0c0aXJMOTRVR2RfOGd6X1AybFB1VGt3bUI0cThJZGJvM1JSWEdIOEctRHY?oc=5" target="_blank" class="article">
-          <div class="title">IVE、新曲「BANG BANG」が月間チャート1位で長期ヒット - AFPBB News</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      <details><summary>＋ 残り 5 件を表示</summary>
-          <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE5SMzhaZ3R4VmxSd3FwOVRNM29KaVNmVHZkVFBJVkJvS3pIVmR1MGJRdzhEZ3BsLUxvSzFjWUpzRjhFNUYxSTd2Ym9ldXczeERL?oc=5" target="_blank" class="article">
-            <div class="title">韓国の6人組アイドルグループ・IVEの「一番くじ」第2弾が登場！「一番くじ IVE FROM STARSHIP ENTERTAINMENT WITH AMUSE Vol.2」のページが公開！ - 電撃ホビーウェブ</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE5OU0xRQTA1YnFtczFNbTRoQ0M0c0FhVXJtZzJqUXN2WXpfYWJ2NnJ5TFQ4Zjhqc1Izb2RDMGR2UGpRcVFCS1FybUFEYUJuTjNiR1Zj?oc=5" target="_blank" class="article">
-            <div class="title">IVE、日本4th EP『LUCID DREAM』収録曲「Fashion」先行配信リリース - CDJournal.com</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiXEFVX3lxTE9nVmlIM1RzY0lJaFlWaDdtb09Pa05vSWI1VUxNTXA2MlJaa2Vzd0JhVE43SEVJbm1Yc3dabGpIVDc0QlFSR1ZlU1A5eXAyYlFJTEl3bGxlMGJoTE5F?oc=5" target="_blank" class="article">
-            <div class="title">IVE、ワールドツアーのマレーシア公演のため出国（動画あり） - Kstyle</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiR0FVX3lxTE1QLVdOejRRajJLa04wSld2aEd4c3BJeHVFQXpfSUZTdmtzc0V3d3pIM0w3My1uanZkVEs2bkEwckVOV1RvYm5F?oc=5" target="_blank" class="article">
-            <div class="title">茨城「LuckyFes’26 」第2弾発表でウルフルズ、木村カエラ、ILLITら23組決定 - festival-life.com</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE44WVhhUFFxbllmdEdxWlVsMXBsQnV4U0F0YS1laVRsVzY2YjhzQXpZYUpOUXBOZzRjZGlrVlZ6MFJKZkN4ZXB4LVRBNmNtUk9COWVjY1lKOHNid1RUX2o1UVpkc3lPZEhuUGxiekFsc2hVZHNDQzBLVQ?oc=5" target="_blank" class="article">
-            <div class="title">IVEの秋『ハートを受け取ってください』'  - starnewskorea.com</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        </details></div>
-      <div class="section sec-ブルージェイズ">
-        <div class="section-header">
-          <span>🐦 ブルージェイズ</span>
-          <span class="badge">🔴 8</span>
-        </div>
-    
-        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE93eE9wdk5RYkFlT01rM09kZHlPUnJqbXFWY0FsM2RPTU5CZ1ZfY24wSmZLLURSS1NvTkNxRUNXeFdRZWMwOS1ZMW14em1QMlVKR3hNd1N6akdmZlhSZUFxTGEwem1GZ1laS1VSLVZoOU5WV1JSX241eDR5WnZIOVE?oc=5" target="_blank" class="article">
-          <div class="title">「すでにスターかも」岡本和真、MLBデビューから6戦連続安打！ 米公式が驚き「旋風を巻き起こしている」 - news.yahoo.co.jp</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMidkFVX3lxTE5rUGhtZnRvVFJCamlwWm5VMEtXeUw4NE9PN3daRDZmN183QWthbjFyV2N3ZGdDR1RZSmo1ZG1vSEJIWHAwaFoyUkRiZk1sMGNpaDlPN0tsSHJkX3pTcjVLUWZVYWxEdkh0OVJac2lNRXdjOUU1VFHSAX5BVV95cUxQNDM3ZWJLa19TdE1CNFM5dk1nZG9SeTZSemlqOTN6QU41WG51Y1p3SDdfZmlFcFRienlFOThTaW1JVm1ObjEzWXV4UGxIX2hrZTZnUm45UFFSSFhYVEZvQ19ieTdWRGhuZFdISnIzQ3hVTWVYYUNKOTJ6amJGc2c?oc=5" target="_blank" class="article">
-          <div class="title">MLB日本勢は出場なし　４日ド軍はナショナルズ戦、村上宗隆Ｗソックスは岡本和真Ｂジェイズ戦 - nikkansports.com</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiXkFVX3lxTFBaclBoLWM5a0wwQmVvX0lxcGQta19hQWpGblRVS1JPTC13YlBOX1Fqd1I4QXBXdVFndkVRNldSS3k0LWRSX2lyc2h6anlzU2NtVnI5SkdveGx3SXNkU2c?oc=5" target="_blank" class="article">
-          <div class="title">岡本和真はMLBに「案外あっさりと順応してしまうかも」専門メディア見解 (2026年4月3日掲載) - ライブドアニュース</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      <details><summary>＋ 残り 5 件を表示</summary>
-          <a href="https://news.google.com/rss/articles/CBMifkFVX3lxTE9HYXYtTC1VbHVlWEllQlpUdE1kdTQ1UmFaaW8ySVN1NkhFeWFSTmRmZm5pZjRKbzR0M2hrdjYwLWt5ZkNIX2pGbk1KZGZELTVmZ09Xa1V6VkhlQVEwckliZTRrSUdQbDBTOUdxT1VoaW84eGpYRTkwQ29MVWdqQQ?oc=5" target="_blank" class="article">
-            <div class="title">「サムライの守備だ」ブルージェイズ岡本和真の168キロ打球に体を張った守備がSNSでバズる…MLB公式は「すでにスター。第一印象はこれ以上ないほど完璧に近い」 - au Webポータル</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE1UQ2xodWd3b2plcFhpeUZXT2RSSy1lTWJTUEp5VmpNY201enUxSFpuX2gxdkRXMzFyMkJqVEVNb2VtR1BJa1lJeXc3QWZncXlMMGtkbHdGSUVuLVJhWmlZ0gFvQVVfeXFMTmFvbldYRG16NGpONjlVVTRVUHdHZnRvT2tvVldlMFZxeEFEeWY1alZ3V25sU1RXNDZ3Tjd4d01mbVE0TkVYa1NUMGEyZ2ZLSUFsSUM5ems4NG5yWDRvSUphTmlBR1EtR2JIRmkweVVN?oc=5" target="_blank" class="article">
-            <div class="title">「すでにスターの域」開幕６試合連続安打の岡本和真をブルージェイズ番記者が激賞「第一印象はこれ以上ないほど良い」 | THE DIGEST - THE DIGEST</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiY0FVX3lxTE5KQllTWlBuZFRDU3BMVUpZQ1pSaEVWYnVHV2ZEX1p4bVJBTk1zTjBfZ2pLSS12a3pwelFMTExuTHdyWEtMMFIxRHBnajMyaEZadW9JeEpmd3c2cjVKZEdGdXI3VQ?oc=5" target="_blank" class="article">
-            <div class="title">ブルージェイズの岡本和真、貴重な適時打 ＭＬＢ - 時事ドットコム</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMisgFBVV95cUxNMlFyaWJUcnlrT0gzdTVVSUF1eXFvYy1xeGYwbTlDa1FCS0hFTk1xbGNHRDZQSWNjZGg1WVp4QWhManNVaWl5RzZmRE9nYm8yOTBGWUdHdG9WUk1HaGRDSFNJX0xpZTFsX29BOEhqLUtScjZSMk1laFNZSVZfN0dGTW1Jam1BLW51RnBPZENSWjdmcHgxVkEtWFlFNU9rZTRtcXRCcWdyYUNCWkZfQ1pGTnBn?oc=5" target="_blank" class="article">
-            <div class="title">トロント・ブルージェイズvsコロラド・ロッキーズのテレビ放送/ネット配信予定・視聴方法｜MLBインターリーグ - DAZN</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTFBaS21ORktpQUYzamhpclUyMWQ2dDdZMWZZYVRhZFNhS3hlV3c2X0MySUlibS1JWUotb1VJcTlDNmdrSVBLcjNLbUZJVTdXOHFOeE9vR0JyNXZqNldBaGhkUEM5R0pYZzRRV29Z?oc=5" target="_blank" class="article">
-            <div class="title">岡本和真と村上宗隆、現地メディアが「各チーム最大の収穫」と伝える - J SPORTSコラム＆ニュース</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        </details></div>
-      <div class="section sec-巨人">
-        <div class="section-header">
-          <span>⚾ 巨人</span>
-          <span class="badge">🔴 8</span>
-        </div>
-    
-        <a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTFBwVzNjZUdOblNQb044eE1UMFdvQ3JiN0trRlNsZjFpcThBdWxkRV8wZjh0eTcxeDh1c1BYVzF0QkdOQjJTNDRjX19ORFBPYmFwZDROcVhn?oc=5" target="_blank" class="article">
-          <div class="title">2026.4.4_対DeNA - giants.jp</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTFBjNTVhUVFWdDVfaXdJdm96X1NoazJXbHcwM1BnQl9CaF9YYmV2bl96UVBOVHU1NGNPZ1prc0x4ZmdWb3JQczY1TlI1NEVVbXRQWXJHR0x3?oc=5" target="_blank" class="article">
-          <div class="title">2026.4.3_対DeNA - giants.jp</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiSEFVX3lxTE9TRm54WTZYWC1pT2xXdE1MUnh5SVREWTB1NEhxVGxRRkFzRUY3bExCM2Q2TXM3U1VtbU9najZLTy01Sk9heU13WA?oc=5" target="_blank" class="article">
-          <div class="title">ルシアーノ投手「初ホールド」記念グッズ発売 - giants.jp</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      <details><summary>＋ 残り 5 件を表示</summary>
-          <a href="https://news.google.com/rss/articles/CBMiSEFVX3lxTE9lSmhuNDFHNzBicl9rbVh4Zm1MdHZweDRWSmNCV05KMV9HZHJaWHhpdXRHelA2bGltOV96QWYxc01YNnZEaEpiWA?oc=5" target="_blank" class="article">
-            <div class="title">2026.3.31_vs立正大学 - giants.jp</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiSEFVX3lxTE84b0JsOHd2TGNEQWxSU0o3ZXJRd1NsWkpfNm1jUm8zV19DQng5ZzB4RnltU3N1cTdwQjJBdWFrWGRrYkMxLURubg?oc=5" target="_blank" class="article">
-            <div class="title">ポケモンとの特別企画オリジナルグッズを発売 - giants.jp</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiXEFVX3lxTE9ZeXVOMndIWWg5cFl4bjYza0luX3JkMzc2bGdzcnUwSHdXWjZvTlRZLVdRU1k0ZTNpUTlUV2ZyMDRJRHFodno3VzJxWmJGa2VyTW9LaS11OUd4M0Rq?oc=5" target="_blank" class="article">
-            <div class="title">4/2 中日 vs 巨人 ゲームハイライト - スポーツナビ</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE1sWEQ5RkpxNzBLaHFPZ3Jtak9DMnV2ME9xOVRac1FSMEVVRWN0UWRUMzY2eEhnYlhKbTdIZ3FlekFObEViS1J4Z3JVa0hhVTMtM2xYNmRQYzNUeVYzZTNQT0xSYmd1SFlTMEFTN3FNRmc3bmJhbkNRcTA4T01jcVk?oc=5" target="_blank" class="article">
-            <div class="title">巨人×ソフトバンク 2026/4/3(金) の試合速報・結果 - 週刊ベースボールONLINE</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE5NTzdvemU5eThDeGp0WTRZVFhiUE1jeXdHT2tEdVBtNWp4bXlXSE9LY0Q2M1l1QkFzbXRSQmdOZEFEQmNNRklhd2g2QXdtdnhpZnlHRnFhWko?oc=5" target="_blank" class="article">
-            <div class="title">巨人に浮上した"問題"「どうするんだろ」 守護神の昇格期待も…もどかしすぎるジレンマ - full-count.jp</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        </details></div>
-      <div class="section sec-マイチーム">
-        <div class="section-header">
-          <span>🏆 マイチーム</span>
-          <span class="badge">🔴 8</span>
-        </div>
-    
-        <a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE1tMVA1VnJEYmk3ZTc4YnAwNG1SMm9mZmd3WjJ6Qjloa2gyNmJfWkVWNFNzNGQ3cWFRdURZX3V6TUpadkJPaXhab3Uwb005X0lPWUlIcENEOHRqcUFtOHlfZUhEMmZqZGx1eGVCUXZR?oc=5" target="_blank" class="article">
-          <div class="title">4/4(土),4/5(日) vs横浜BC戦 ホームゲーム開催情報 - 川崎ブレイブサンダース</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE1VWmRrNmFpakljSlVrLXM2UXNNQ1hQaHluYW9WVHNuLUNvLXBaZHBTZl9vR2x3Y04tME9NYlZOMTJwLWE3ZndFU3RuM0FRdDRRUncwdVFsdEc1U1pObUhTbVRB?oc=5" target="_blank" class="article">
-          <div class="title">4/1(水) vs越谷戦 ホームゲーム開催情報 - 川崎ブレイブサンダース</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE9ka0tJMC1VeDlNcmRkRmJzN3RxUTRMeW9NYk9vTG1NTjBnWnhYMllsZHNvQmRVZE1FV3ZOcGYzZGdrNzBDNGN5VE9fcUN2c2hhY1Zj?oc=5" target="_blank" class="article">
-          <div class="title">4月18日（土）横浜F・マリノスvs川崎フロンターレに来場されるビジター側サポーターの皆さまへ - 横浜F・マリノス 公式サイト</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      <details><summary>＋ 残り 5 件を表示</summary>
-          <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5JLUk5R3Z1ZVQzazQ3MUJRQUNLbnBkdERRd1F1TUd5SzFZVHZsbmkxWmkwRWRseTlJSDUyX1N6ZmZDRHhFNlBaNzZHZmhVVmtFS2NwZ0doNC0yaTBtWFg0?oc=5" target="_blank" class="article">
-            <div class="title">明治安田J1百年構想リーグ 地域リーグラウンド 第9節 vs 川崎フロンターレ 試合情報 - 浦和レッドダイヤモンズ公式サイト</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE5BRmxpLUMxelB1eTBxelRPQ29xTEZIVXBfYmxkQXB0M3BPZHpyWElHc3Q3cXRqb0VEejdvZUppOFlZNlp0eGVIUFVMdE0xamVjdVR2aUVDZV9SMTY1dDV4Q0toeFBmMDhr?oc=5" target="_blank" class="article">
-            <div class="title">上作延小学校に屋外用バスケットゴールを寄贈 - 川崎ブレイブサンダース</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiZkFVX3lxTFBwajd1aVQ1cGdDOFNXNUFOQ0c2Q0F6eDB4OVM0aWxNS2xnVVVTMkx6VmVyYWhxN1Z5SEFEU0NkU1JDajBrRklWYjFJdm9HelV0el9WZ3ByQkhjbVRiaHozY2pTbGF3Zw?oc=5" target="_blank" class="article">
-            <div class="title">4/4 横浜BC戦 新商品販売のお知らせ - 川崎ブレイブサンダース</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxNQmhpdk1TNldOT3k4VmE1dGx0SWliZU5pSmxFTUhXNFBSa0VlUGxFQTJfekNZeVloeTEwUFJTQnE3eGJUZi1QNDh3Wkg4aGFoMGR3SklCZHE2MmxIc1U3cmllTWFyVFBFR0ZleGJFYl9BNDkySmRrV3BVdmNzbnZyYlZnNk42YzcyUWhuSjNEOGJnVFl1cGItWA?oc=5" target="_blank" class="article">
-            <div class="title">3/29 ○三河 84-72 川崎● りそなグループB.LEAGUE 2025-26 B1リーグ戦 第27節GAME2 (46/60) - 川崎ブレイブサンダース</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE1NaGZ0U3VKeWJxWWhpSUE3ZGlzLWRLeE8wTFh3aTBLSWlPMkY0OU4wZDBHOHhoZnV1UWFSbGttZDRuUGdkNk0ybG1NR3d3aTdBVXZZbTNpUGNTNktfQnpVV0V2V0drZVpCMjZCbGFNTHlxd05ZbFBndldQbnBWc1U?oc=5" target="_blank" class="article">
-            <div class="title">NECレッドロケッツ川崎・佐藤淑乃選手がポニーキャニオンと専属マネジメント契約を締結（バレーボールマガジン） - news.yahoo.co.jp</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        </details></div>
-      <div class="section sec-AI・技術">
-        <div class="section-header">
-          <span>🤖 AI・技術</span>
-          <span class="badge">🔴 8</span>
-        </div>
-    
-        <a href="https://news.google.com/rss/articles/CBMicEFVX3lxTE94aHhicXRuVHltV1RXcWp3cFF0MUZQMjZRclNaZzlSNkthbEpmMHozRlA3SzlrM1pCbXo5VjItMm1mZ0tCX0lBYXdzMkV1OFVLRlhMMUg5Ui0ySTA2aFMyLThtOXR2emh6eGJER3cxbDE?oc=5" target="_blank" class="article">
-          <div class="title">AI画像広告は生活者に受け入れられるのか？～生成AIを活用した広告クリエイティブへの生活者の反応を分析 - 株式会社ビデオリサーチ</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE1jZnBIeW9jSmFpRGZ4VTRuTUpzc2VFalJpbHgtTTlvRHNrMDY1SEhsV1lqMTJhcWo0UDluSk14ZUNRNnpQUWR6NnVZa0hzOFVPdWpNc3BJVUdCeWtzbWt1cnI5VENnQVZhb2c?oc=5" target="_blank" class="article">
-          <div class="title">ChatGPT・Gemini・Claude・Perplexityでの自社評価を¥500で丸ごと診断—「AIタナドリ」が6月末まで特別価格で提供 - PR TIMES</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      
-        <a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE81UmtWd3FXcFk1TWt6X1ZhMGZoY2d6QjNBZzJ0VGd1emM3anRDeldRSzkzNHI2YlpaTXFoZTA5cWRnOXczeGxWYkc1cGNaN0JZenZEbks2bkw5RmNkUm1HdE5pTmtjRnR2ZHc?oc=5" target="_blank" class="article">
-          <div class="title">インソース：新年度に業務変革！「春の生成AI実践強化キャンペーン」 ～４月・５月は公開講座を毎日開催、AIエージェント研修や無料アセスメント体験も 2026年4月3日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞</div>
-          <div class="summary">詳細を確認する</div>
-        </a>
-      <details><summary>＋ 残り 5 件を表示</summary>
-          <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBYMVFMVlEzVVhnejF2alBrb2hBblpFS2tzQ1U4bXhSa200bXNkc0Zidkp5eUFmQ2FtSlRNY0o2dTZyQ3p3VU4wQnBWdHktSVlOTGhTMGlfWWktR2dUU2JMTUtSNWdLelE?oc=5" target="_blank" class="article">
-            <div class="title">ChatGPTがCarPlayに対応、音声モードを移動中に - ケータイ Watch</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5QMkUzLVlsVGZfV21JTURDVGlQX19qQnF6bFoyNktlVHlnb2dhdGR6NlJyOW04Y1QwUV9kVzVRRGRrRy1HeU1sQWhiSEk2MGpFQVVTNTNDNmlMSzBmczFQUTlTZnBMR0xSaGFlSWJGT1F5STVNU1VoQXgzYjFURmM?oc=5" target="_blank" class="article">
-            <div class="title">関数はもう不要？ Gemini×スプレッドシートで実現する「爆速×高精度」データ分析術（ビジネス＋IT） - news.yahoo.co.jp</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE05QUwxYXlneVMyd2E0OHdvZW9Vem5oZ1UxVTc1MmdYbWNpT25WMHZZZktrUk1uQUVEblQzZEZVNDRPbE51bU9kQUdOZmE3UWhxd0FaRWRR?oc=5" target="_blank" class="article">
-            <div class="title">買い物での生成AI活用、前年比6.4倍に急増 アライドアーキテクツが調査結果を発表 - コマースピック</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE1sd0M5V0FXVzgxeW9HWEhUNnQ4dmZpV19sdGNGSGFMVVRLc2RrLUZZbDc0RGNtd05WV1lKT0pSVWhDQUVjRy1NaDRSWW9sc0hBcXc2OTFSX1U0dnEzSTk1VmFzUnFCM2FhYjFFTw?oc=5" target="_blank" class="article">
-            <div class="title">Googleの「Gemini」、他のAIアプリから「記憶」やチャット履歴をインポート可能に：乗り換えが簡単に - techtarget.itmedia.co.jp</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        
-          <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFA2aEx3ZkJpNnJJWF8zanAyODRlSGctWkFNYzVFNnVlNWZkZ3Bnc3ZhbEhMemR0ZmhUV2JaNmUyMndrR05UM2dHc3NfRW1sQjB4Z3NjM0NLQkF2cnpGOXR0aTQzMU5jTWZP?oc=5" target="_blank" class="article">
-            <div class="title">神奈川初、高校生対象の「生成ＡＩ倫理講座」 大和プログラミングスクール ビジネスウエーブ - カナロコ</div>
-            <div class="summary">詳細を確認する</div>
-          </a>
-        </details></div>
-    </div>
-  </body>
-  </html>
-  
+    /* タイトルは青、要約は白、時間はグレー */
+    .title { font-size: 1rem; color: #4da6ff; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+    .summary { font-size: 0.85rem; color: #eeeeee; line-height: 1.5; }
+    .time { font-size: 0.75rem; color: #777; margin-top: 6px; text-align: right; }
+  </style></head><body><div class="container"><div class="section sec-主要ニュース"><div class="header head-主要ニュース"><span>🌍</span> 主要ニュース</div><a href="https://news.yahoo.co.jp/pickup/6575061?source=rss" class="article">
+        <div class="title">イラン 米軍F35戦闘機撃墜を発表</div>
+        <div class="summary"></div>
+        <div class="time">3時間前</div>
+      </a><a href="https://news.yahoo.co.jp/pickup/6575080?source=rss" class="article">
+        <div class="title">生活保護費1.1億円未入金 県謝罪</div>
+        <div class="summary"></div>
+        <div class="time">55分前</div>
+      </a><a href="https://news.yahoo.co.jp/pickup/6575072?source=rss" class="article">
+        <div class="title">死刑を早めて 罪に苦悶する死刑囚</div>
+        <div class="summary"></div>
+        <div class="time">2時間前</div>
+      </a><a href="https://news.yahoo.co.jp/pickup/6575086?source=rss" class="article">
+        <div class="title">病院敷地内に血を流した男性 死亡</div>
+        <div class="summary"></div>
+        <div class="time">12分前</div>
+      </a><a href="https://news.yahoo.co.jp/pickup/6575081?source=rss" class="article">
+        <div class="title">初任給40万円 64%が入社の決め手</div>
+        <div class="summary"></div>
+        <div class="time">47分前</div>
+      </a><a href="https://news.yahoo.co.jp/pickup/6575084?source=rss" class="article">
+        <div class="title">SNS「みてね」 想定外の快進撃</div>
+        <div class="summary"></div>
+        <div class="time">17分前</div>
+      </a></div><div class="section sec-推しグループ"><div class="header head-推しグループ"><span>🌟</span> 推しグループ</div><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5tNmczdEk0R1d0WGtFTlpzZFh4WlNLQ2lBY29ZZ1BlazdaZGR4LWpuMEFGMmxpWU9YRjZiLWxKamtMNkJkeHBUZnRvRXhzTU5xWEx6NTlEMXBIVHE0TWFQR01iQjRzMGtYOVJHcFRfbTdXTU9ibzNQdWhZNFpHa0U?oc=5" class="article">
+        <div class="title">IVE、日本4th EPの収録曲「Fashion」を本日先行配信リリース！前向きな歌詞やメロディに注目（Kstyle）</div>
+        <div class="summary"></div>
+        <div class="time">6時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMifEFVX3lxTE9NaDllZFpDeDc3YWdtQ3VjeDJpUU9ITDFsdGFsZXdYQXRTcWdTMFhZTm4xaE9ZLVlhRXJGSDN1VE5qQ0lsZVlxYl8zOGg0MFFRZFY3eHNhaVl6Yk1nN1VoWHFNSXJ0bGI3QkRTTE95OTZzRnB6RTU3aUg4V3I?oc=5" class="article">
+        <div class="title">IVE JAPAN 4th EP『LUCID DREAM』が5月27日(水)にリリース決定！</div>
+        <div class="summary"></div>
+        <div class="time">4時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE44di1paFhSaFFhS0JHQXY4Qmd2bW14UkxjdWh2VEE5SFJNdmNya255ZllOWTNVN2FIa1RhdmRsdjE3M2hqelE1NkExdHBtRVVGdEl0dGh0ZVpvWWhOT1BxNktB?oc=5" class="article">
+        <div class="title">ILLIT、コンセプトフォト＆フィルム「PAW PAW」にメンバー似の動物たちが登場</div>
+        <div class="summary"></div>
+        <div class="time">3時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE5qLWFZa3VzS0pGUklzNHQ1R0lxRUJlNEQ0Rlhod0hvSDgtME5aLUlLZmpnUHFHY0dOcnZCc3ZJbGFhbVVBeUcweDZ0SG5NejdSRHc?oc=5" class="article">
+        <div class="title">IVE、JAPAN 4th EP「LUCID DREAM」5/27リリース決定 新曲「Fashion」がApp Storeキャンペーンソングに起用</div>
+        <div class="summary"></div>
+        <div class="time">4時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE9CMU4tcUZXV1dEZUhyY3lsb2lfSDNGZURhVGZKTW1VREhqODRTS2E5ZlhZUmlDRnlOMGxxVVA4ZU41cjRscFFGLXNaOWExcDdu?oc=5" class="article">
+        <div class="title">韓国の6人組グループ「IVE」の撮りおろし写真を使用した新商品がガシャポン(R)、食玩、プライズ、一番くじに続々登場！</div>
+        <div class="summary"></div>
+        <div class="time">4時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiR0FVX3lxTE1QLVdOejRRajJLa04wSld2aEd4c3BJeHVFQXpfSUZTdmtzc0V3d3pIM0w3My1uanZkVEs2bkEwckVOV1RvYm5F?oc=5" class="article">
+        <div class="title">茨城「LuckyFes’26 」第2弾発表でウルフルズ、木村カエラ、ILLITら23組決定</div>
+        <div class="summary"></div>
+        <div class="time">6時間前</div>
+      </a></div><div class="section sec-巨人"><div class="header head-巨人"><span>⚾</span> 巨人</div><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE1wTFlOSjhXZUdSakpHRUU5STgxeGFTWFpDY3lGSm1KSE1DWXE5Uk1idkhJZ2xvLUttY1Q1ZWtLV3hva0ZJclZXSTVXNnRIUTdCeUZWMDI4OFFJLXdSQUkwNE50SnA1eEhWc25xcV9wbHpiSm4zYjBTWFJTLTY4Mm8?oc=5" class="article">
+        <div class="title">キャベッジ、捕球体勢入るもまさかの落球…球場は落胆の声（日刊スポーツ）</div>
+        <div class="summary"></div>
+        <div class="time">40分前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxPQTk3ZUdhX0VZdGhiamxlOE1EWEpmM1pDUnNrSlhaZExCajBuOWhKZ3c5VHotX3NaNVZvbUJHWWswbXhQczdyY0k3U2UycXRnWXVnbW9UQklGaEQ3OVpGUy03ZHBpRWRQenR0V3I2UWlWWGhHbS1IR2dJRzJkSzM0LWczOXnSAYoBQVVfeXFMT3pjYk92OEhCMlVvV3F2akFTMDFHaUxRZUFnMGdCejJjT0ZkRzc2d1p3a19DOHNlZ0xMbk5uS05Zd0ZwR2lhSmwzdTUwYlJsSDMzeFdBeXpqM0dpdTBwRVROR0FnU2ViVVpaZnVZYWpSa3JSelZQS0Ztb2w1SGh3Qjc2YS1lNUJOSFNB?oc=5" class="article">
+        <div class="title">フィリーズなどで強打の二塁手として活躍したレジェンドが東京ドームでダルベックらと交流「満喫しています」</div>
+        <div class="summary"></div>
+        <div class="time">3時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMijwFBVV95cUxOZW1OR2k2UHpIX282VmZhdXlfTUNEamFpTXYtczNhLWtqN3RoNzlVOTh5cTFyaTI5SlRaRm9nTW1wbEhpdmFJOWdtOWZ2bUE1TEtyaWctektCQlhaOW8wQ0VUM3poS2d4MXdZWVhTTmF4enJTQm1oQ1A4YWpGR0phRW9uQWhOMUxvdHpQVGpoVQ?oc=5" class="article">
+        <div class="title">巨人のライデル・マルティネス</div>
+        <div class="summary"></div>
+        <div class="time">3時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE1fT2V4aFZUTVVKWGRRM0lydXF5cDVtSUtwUjMxOG5CS3J3aEIxcW1YcnY1c1A3LU5QcnRsb19TVjBYREJ0NklzenliX2tWQTM4cjVFdlhPMUpwOUZYV3VrVW5vVDlNb1VFbjUtLW9ERTZCM3R4SGVIbFJlMXdjS2M?oc=5" class="article">
+        <div class="title">「すしレース」タマゴが徹底先行で一気に押し切り初勝利 また旧メンバー白星（日刊スポーツ）</div>
+        <div class="summary"></div>
+        <div class="time">45分前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxQcExhWHdnNGZTaFdBSVdHZ3VrQzJ5Z0ZNVWdFWkJ1TFJSN2QzeC1ITmJwQnNSZGludTREVURiSUhWYVZobDlLbDhTT2hXUXlFSGtSaHVsa096WXlGV21PQUhaRFhUVHZNSDlYbTV4eW9EcW1PU0NxRmV0U0hYLVhQS2RVYmfSAYoBQVVfeXFMTlBxbXZ5N2xYTnRZRTZHQTRacnduWUIwNldLeUtEMno5M3NCM1RNVzlRcFA0RHh5RTE3SW1NNm53cVhyTVF3TnFrS3NaMVlWb0F2VXg4X01iOWtsMUxVZ3gzWlhSWlN5R0VCSTJHRW1fcDZRb1JVckdLNUNEeTJXZ1B0ekZlQWZzajhR?oc=5" class="article">
+        <div class="title">防御率０・００のルシアーノが登録抹消　外国人枠で苦渋の選択　登板数＆ホールドでリーグトップ</div>
+        <div class="summary"></div>
+        <div class="time">4時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9UX3hPdHFqbEw1bWFqcmRqTXJQeDFpdm85RmFjdmc5S0NyQ19sTnJtbHZ2U2lncE9OemlGWk1TVFpLR1ZibDllVkRSLUtWY1A1eF9Xb3gtWVpscklqOVZYeWZJb2Z2eHlMcjdoRExwUXkzZDJ5LXZpU0NsR29BLXM?oc=5" class="article">
+        <div class="title">６８年ぶり偉業狙うドラ１・竹丸和幸、３回まで無安打投球も４回に先取点献上 満塁から林に適時打（スポーツ報知）</div>
+        <div class="summary"></div>
+        <div class="time">57分前</div>
+      </a></div><div class="section sec-マイチーム"><div class="header head-マイチーム"><span>🏆</span> マイチーム</div><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxQcTdRQXpwY1gwQ1lLOTZobHRDTHRqcWt2THZTMVF5WVVQa1B0dFdUeFA2SjdlT2lxU2FZMGNiUVgyUWdxaUk1TmNnZlc2TFJjdWpwSVRZdEUzN2thcGowS25aMzNCakpyNDlwLWptdUo5MXc2RE1sbkp6bHNXdDVsVg?oc=5" class="article">
+        <div class="title">ブルージェイズ・岡本和真、脅威の2戦連発に米騒然「彼とムラカミは前評判以上に優れている」「すでにMLBに対応している」</div>
+        <div class="summary"></div>
+        <div class="time">3日前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE1yc3I2aDA4WjVXOElrSTEyX3VfanhJMEtCNXd1V2lTY3ZqTmxBUkx4TTlYZVVPRVo1QU9uN2pMbXNrRmpGT2NEMnJoTXFIVXVuaXJGWHZ3bFRpc2xTamhIdGdZbHBUWFk1WE5XWFZMUGxJbnFLZG1kZnZRa2lmcDA?oc=5" class="article">
+        <div class="title">川崎から世界へ「第2回ハイセンスカップU12」 川崎フロンターレU-12が優勝 サッカー元日本代表の柿谷曜一朗氏もエール</div>
+        <div class="summary"></div>
+        <div class="time">2時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE1VWmRrNmFpakljSlVrLXM2UXNNQ1hQaHluYW9WVHNuLUNvLXBaZHBTZl9vR2x3Y04tME9NYlZOMTJwLWE3ZndFU3RuM0FRdDRRUncwdVFsdEc1U1pObUhTbVRB?oc=5" class="article">
+        <div class="title">4/1(水) vs越谷戦 ホームゲーム開催情報</div>
+        <div class="summary"></div>
+        <div class="time">2日前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiR0FVX3lxTE5RZTA2QXU3ZzQxdkZHWEZkeFdzdjBFbnE2M0UzZFB1VkZleGR2YW5wUXpkZ0h5RWUyZnJtbnlLdnpITXZudHhV?oc=5" class="article">
+        <div class="title">川崎フロンターレU-18（神奈川）｜高円宮杯 JFA U-18 サッカープレミアリーグ 2026 EAST</div>
+        <div class="summary"></div>
+        <div class="time">1時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE9ka0tJMC1VeDlNcmRkRmJzN3RxUTRMeW9NYk9vTG1NTjBnWnhYMllsZHNvQmRVZE1FV3ZOcGYzZGdrNzBDNGN5VE9fcUN2c2hhY1Zj?oc=5" class="article">
+        <div class="title">4月18日（土）横浜F・マリノスvs川崎フロンターレに来場されるビジター側サポーターの皆さまへ</div>
+        <div class="summary"></div>
+        <div class="time">1日前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFAxY3VlNEh0V3pHcUhZZGt4WE9ldC0ycFhWY2tWQm93dnp2bmFQMzJmRmk0RGpiSnhaQWgzbVM0TEV3dTk3aVNjaVYtaldHVDM4Ynl2THlqNU5OVFhjVlln0gFkQVVfeXFMTldaaWIxcVhPME5rV09nZVl2SW95ZEpJNzZZd1U0NUNIaEFpRlVIMjkzNUVja3g0OGhrYm1VT3pKc2NrVlc5NGZYa3dZR2s5cU42RHhDTmQ1SFVrQ3lSSzEyaEx5cg?oc=5" class="article">
+        <div class="title">川崎から世界へ「第2回ハイセンスカップU12」　川崎フロンターレU-12が優勝　サッカー元日本代表の柿谷曜一朗氏もエール | チバテレ＋プラス</div>
+        <div class="summary"></div>
+        <div class="time">2時間前</div>
+      </a></div><div class="section sec-AI・技術"><div class="header head-AI・技術"><span>🤖</span> AI・技術</div><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE80TDBUUFBIS3VEdHdReDRSYU1fazJpelZSWGNoT2tQY2lUVUZrM1FzcnM1RUVLcEU4Xy02ZEJjcmY4eHY2NkstQ1BaTjI3TlpNSmFmMmxKc1hMaHlRY2Y2cXYyN2JZNzdjV0ttckJyYXZhNzU3S3BNRE44UDRtSGs?oc=5" class="article">
+        <div class="title">GeminiがGoogleスライドで「編集可能なスライド」生成可能に 日本語版も順次対応予定（ITmedia NEWS）</div>
+        <div class="summary"></div>
+        <div class="time">11時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE9KalByT3RIZm9pNUZvTmxabUlWTTdtY1NYQ0dHa2lNanpTMjc3WGNuSUZpanpzRjJNX3FHdDJzUVNnXzJQWFRtaGRQR2FxbkpyR3NXd0NrX3RiZw?oc=5" class="article">
+        <div class="title">"友達作り"も相談 イマドキ大学生の「生成AI」の使い方 入学式で聞いてみると・・・</div>
+        <div class="summary"></div>
+        <div class="time">1時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE1nekxrZ0VPYWxxY1FvYlhMT0pxLXVhS21kR0ZJWmtxeDhuY3dXNGZ2MVUzTVFWUExCMHhHNnJyQzh1QVJRU3YzZXlwUlRTc3AycWozUDJybEtTZXhKLWJFUktUVUtUNVhlMkE?oc=5" class="article">
+        <div class="title">ブリングアウト代表・中野 慧の著書『生成AIで最強の組織が生まれる トップと現場をつなぐ一次情報経営』Amazon 新着ランキング マネジメント・人材管理カテゴリー 1位を獲得</div>
+        <div class="summary"></div>
+        <div class="time">7時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMicEFVX3lxTE94aHhicXRuVHltV1RXcWp3cFF0MUZQMjZRclNaZzlSNkthbEpmMHozRlA3SzlrM1pCbXo5VjItMm1mZ0tCX0lBYXdzMkV1OFVLRlhMMUg5Ui0ySTA2aFMyLThtOXR2emh6eGJER3cxbDE?oc=5" class="article">
+        <div class="title">AI画像広告は生活者に受け入れられるのか？～生成AIを活用した広告クリエイティブへの生活者の反応を分析</div>
+        <div class="summary"></div>
+        <div class="time">9時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE9LcVJvUktUaDFidEdIc1VteFlFZGEtVC1iZEZ4WWJMYllVNWRjZFBVSktKUEQwS0llNjMzM3Nqd2dlTkx3VXJYQ3B3TTFuSXBNRkJSTlFYUmRTcDY5X0dnaklRaFh2UnhBbE5NNjBR?oc=5" class="article">
+        <div class="title">小中学生の生成AI使用に関する調査を実施。中学生の約半数が日常生活で使用、ツールは「ChatGPT」が最多</div>
+        <div class="summary"></div>
+        <div class="time">1時間前</div>
+      </a><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE1QZ1Q3eVd3MUcwNkhjUkxrdloxeER2Wjhna1hUWmZ5NFBxajNxeFNjT0VvMGc3dHZsOWt3c1pkbXpqMnRZdUFyUUFLbW9meFBUTThJOXNlVlQ1dEdDMlR6allYMmxyWmV2Q1E?oc=5" class="article">
+        <div class="title">アスマーク：生成 AI を活用したマーケティングリサーチ全自動化プラットフォーム に関する特許取得のお知らせ 2026年4月3日(適時開示) ：日経会社情報DIGITAL</div>
+        <div class="summary"></div>
+        <div class="time">4時間前</div>
+      </a></div></div></body></html>
