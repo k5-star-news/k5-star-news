@@ -1,18 +1,216 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><style>
-    :root { --bg: #050505; --card: #121212; --line: #222; }
-    body { background: var(--bg); color: #ccc; font-family: -apple-system, sans-serif; margin: 0; padding: 15px; }
-    .container { display: grid; grid-template-columns: 1fr; gap: 15px; align-items: start; }
-    @media (min-width: 1400px) { .container { grid-template-columns: repeat(5, 1fr); } }
-    .section { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid var(--line); }
-    .sec-主要ニュース { border-top: 3px solid #3498db; } .head-主要ニュース { color: #3498db; }
-    .sec-推しグループ { border-top: 3px solid #e91e63; } .head-推しグループ { color: #e91e63; }
-    .sec-巨人 { border-top: 3px solid #f39c12; } .head-巨人 { color: #f39c12; }
-    .sec-マイチーム { border-top: 3px solid #00d2ff; } .head-マイチーム { color: #00d2ff; }
-    .sec-AI・技術 { border-top: 3px solid #9b59b6; } .head-AI・技術 { color: #9b59b6; }
-    .header { font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
-    .article { display: block; text-decoration: none; padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
-    .article:last-child { border-bottom: none; }
-    .title { font-size: 0.95rem; color: #4da6ff; font-weight: 600; line-height: 1.4; margin-bottom: 5px; }
-    .summary { font-size: 0.85rem; color: #eeeeee; line-height: 1.5; }
-    .time { font-size: 0.75rem; color: #777; margin-top: 6px; text-align: right; }
-  </style></head><body><div class="container"><div class="section sec-主要ニュース"><div class="header head-主要ニュース">🌍 主要ニュース</div></div><div class="section sec-推しグループ"><div class="header head-推しグループ">🌟 推しグループ</div></div><div class="section sec-巨人"><div class="header head-巨人">⚾ 巨人</div></div><div class="section sec-マイチーム"><div class="header head-マイチーム">🏆 マイチーム</div></div><div class="section sec-AI・技術"><div class="header head-AI・技術">🤖 AI・技術</div></div></div></body></html>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background: #000; color: #fff; font-family: -apple-system, sans-serif; padding: 10px; margin: 0; }
+    section { background: #0c0c0c; padding: 12px; border-radius: 12px; border: 1px solid #222; margin-bottom: 15px; }
+    .head { font-size: 20px; font-weight: 900; margin-bottom: 10px; border-bottom: 2px solid #333; padding-bottom: 5px; }
+    .item { display: flex; align-items: stretch; border-bottom: 1px solid #1a1a1a; }
+    .link-main { flex-grow: 1; text-decoration: none; padding: 15px 10px 15px 0; }
+    .t { font-size: 1.25rem; font-weight: 900; color: #31a1ff; line-height: 1.3; }
+    .s { font-size: 15px; color: #bbb; font-weight: 700; margin-top: 6px; line-height: 1.4; }
+    @media (min-width: 600px) { .t { font-size: 1rem; } .s { font-size: 14px; } }
+    
+    .btn-pin { display: flex; align-items: center; justify-content: center; background: #222; color: #ffcc00; padding: 0 15px; font-size: 14px; font-weight: bold; border-left: 1px solid #333; cursor: pointer; user-select: none; }
+    .pin-box { border: 2px solid #ffcc00; background: #1a1500; }
+    .pin-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #4d3e00; }
+    .pin-link { color: #fff; text-decoration: none; font-weight: bold; flex-grow: 1; padding-right: 10px; }
+    .pin-delete { background: #ff3b30; color: #fff; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
+    
+    summary { padding: 10px; cursor: pointer; color: #666; font-weight: 800; border-top: 1px dashed #222; }
+    .item-old { display: block; text-decoration: none; padding: 8px 0; color: #666; font-size: 13px; }
+  </style>
+  <script>
+    // 画面遷移なしでGASに保存する魔法のスクリプト
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzzBma248sj2VobvggeD6wsZRMBLoyKlYlcCGKwHgfExleSGsC6H389ZNygtA2nux6Q/exec";
+    function savePin(url, title, btn) {
+      if(btn.innerText === "📌 保存済") return;
+      btn.innerText = "📌 保存済";
+      btn.style.color = "#777";
+      fetch(WEB_APP_URL + "?action=pin&url=" + encodeURIComponent(url) + "&title=" + encodeURIComponent(title), { mode: 'no-cors' });
+    }
+    function unpinNews(url, divId) {
+      document.getElementById(divId).style.display = 'none';
+      fetch(WEB_APP_URL + "?action=unpin&url=" + encodeURIComponent(url), { mode: 'no-cors' });
+    }
+  </script>
+  </head><body><div style="text-align:right;padding:5px;font-size:11px;color:#444;">更新: 16:23</div>
+  <section class="weekly-box"><h2 class="head">決算：先週のまとめ</h2>
+    <div class="weekly-item"><strong>主要:</strong> undefined</div>
+    <div class="weekly-item"><strong>推し:</strong> undefined</div>
+    <div class="weekly-item"><strong>スポーツ:</strong> undefined</div>
+    <div class="weekly-item"><strong>AI:</strong> undefined</div></section><main><section id="major"><h2 class="head">🌍 主要ニュース</h2>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9fMjdzZjNLX1hUdkFEN08zOUJjT0FEcWZUVjBtc0JrNGZnVjdNRXZrbHRxcWt6OWg1NVJFN2VkNWpRVEpmZ0hMLUZ6LS1RSzYwdmwtbklic0x2dnU2d3dTOTFfaXN3NUZoWkhSMkxsVzRFeURHeTh3MGxqQmNuMzQ?oc=5" class="link-main" target="_blank">
+          <div class="t">首相動静（4月4日）</div>
+          <div class="s">4月4日の岸田首相の活動記録</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTE9fMjdzZjNLX1hUdkFEN08zOUJjT0FEcWZUVjBtc0JrNGZnVjdNRXZrbHRxcWt6OWg1NVJFN2VkNWpRVEpmZ0hMLUZ6LS1RSzYwdmwtbklic0x2dnU2d3dTOTFfaXN3NUZoWkhSMkxsVzRFeURHeTh3MGxqQmNuMzQ?oc=5', '首相動静（4月4日）', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1KUU1wMWhqV3FXeHB2cW9kMTQ1NlFpMmF4YTVWb2lzQllzUnQ3Z3ZhbG82Q0ZBT0dEbmFmS1pMQzdFbXFmdi1VWlJzZEhweTdF?oc=5" class="link-main" target="_blank">
+          <div class="t">春は「出張買い取り」増 なぜ依頼</div>
+          <div class="s">春の出張買い取りが増える理由</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTE1KUU1wMWhqV3FXeHB2cW9kMTQ1NlFpMmF4YTVWb2lzQllzUnQ3Z3ZhbG82Q0ZBT0dEbmFmS1pMQzdFbXFmdi1VWlJzZEhweTdF?oc=5', '春は「出張買い取り」増 なぜ依頼', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFBmYjJDT1UyLS1raVh1OVQwMk41UVI1MzExWkVmM3hfM3lTZjFvVXNoRGhSOTJxcnNfTnVVcHl6RDJFcUt2UkxGNGRMbkNjLVFULWRFNW1tME50ZTA2bnYwTlJIZXVSaWV5RmtvMlB3aHZrdzdLSWZwR2VRWDJSUms?oc=5" class="link-main" target="_blank">
+          <div class="t">「通常とは違うルート」 万全の体制だったと反対協 辺野古事故現場</div>
+          <div class="s">辺野古事故、通常と違うルートか</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTFBmYjJDT1UyLS1raVh1OVQwMk41UVI1MzExWkVmM3hfM3lTZjFvVXNoRGhSOTJxcnNfTnVVcHl6RDJFcUt2UkxGNGRMbkNjLVFULWRFNW1tME50ZTA2bnYwTlJIZXVSaWV5RmtvMlB3aHZrdzdLSWZwR2VRWDJSUms?oc=5', '「通常とは違うルート」 万全の体制だったと反対協 辺野古事故現場', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFBJd29PYjRmSzJBcFE2MmVxdDdZdlZoUURaSzFWSW5JLXhIbnhsQTZWOFRWby1sd1BiX2wtbklDNDdSYndJWGtabUFSRkhpWkkzUmZuWXBXUEEzaEd2OUFCUEZibjlzN0xUb2RkSVRxNDAxVGd6TktnSFFhSW0teVk?oc=5" class="link-main" target="_blank">
+          <div class="t">バルセロナ、ラ・リーガ連覇見えた！アトレティコとの3連戦初戦に勝利…2位レアル・マドリーとの勝ち点差を7まで広げる</div>
+          <div class="s">バルサ勝利、首位レアルと差拡大</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTFBJd29PYjRmSzJBcFE2MmVxdDdZdlZoUURaSzFWSW5JLXhIbnhsQTZWOFRWby1sd1BiX2wtbklDNDdSYndJWGtabUFSRkhpWkkzUmZuWXBXUEEzaEd2OUFCUEZibjlzN0xUb2RkSVRxNDAxVGd6TktnSFFhSW0teVk?oc=5', 'バルセロナ、ラ・リーガ連覇見えた！アトレティコとの3連戦初戦に勝利…2位レアル・マドリーとの勝ち点差を7まで広げる', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE14d0VBMjdXVHFhMnIxZ2k0OVJhQ2w1b3ZLNWN0azR3bVVIQ3FaZWVSR01ueGluVDEtaG5pMmZDSFZZeXhyX3JEUEJlZlJ2dkk3?oc=5" class="link-main" target="_blank">
+          <div class="t">政府 燃料や石油製品を「仲介」</div>
+          <div class="s">燃料や石油製品の仲介を政府実施</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTE14d0VBMjdXVHFhMnIxZ2k0OVJhQ2w1b3ZLNWN0azR3bVVIQ3FaZWVSR01ueGluVDEtaG5pMmZDSFZZeXhyX3JEUEJlZlJ2dkk3?oc=5', '政府 燃料や石油製品を「仲介」', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5UeE03VGc0OFVGRjlOd1Fpd2p1MnpuOHZGTExwLVZ0THYzLV9PU2xJdVc0dG5DRjU5cEVSLUVmRHF2M3NGY1ZHSDF0eTFScndXTFNWRjVJdVBoNXpzdndwTUI3S0YtSnVMc2d6T0w0SVk3ekdocmpfMHRjY0R0ODg?oc=5" class="link-main" target="_blank">
+          <div class="t">「派遣切り」の次は「タイミードタキャン」…未払い賃金300億円疑惑が浮上する「スキマバイト」の残酷な裏側</div>
+          <div class="s">スキマバイト未払い賃金等の実態</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTE5UeE03VGc0OFVGRjlOd1Fpd2p1MnpuOHZGTExwLVZ0THYzLV9PU2xJdVc0dG5DRjU5cEVSLUVmRHF2M3NGY1ZHSDF0eTFScndXTFNWRjVJdVBoNXpzdndwTUI3S0YtSnVMc2d6T0w0SVk3ekdocmpfMHRjY0R0ODg?oc=5', '「派遣切り」の次は「タイミードタキャン」…未払い賃金300億円疑惑が浮上する「スキマバイト」の残酷な裏側', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1JamRCU0JmWnV0V0VaWjZxaHdEWUViREZ6bGFaenF1aHZ3bVotLTQybFFKcVBPMG1ieW8xSTM0Z1NJRF9qR2htMmxzcWh1eXZ6?oc=5" class="link-main" target="_blank">
+          <div class="t">「スキマバイト」でトラブル なぜ</div>
+          <div class="s">スキマバイトでトラブルが急増中</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTE1JamRCU0JmWnV0V0VaWjZxaHdEWUViREZ6bGFaenF1aHZ3bVotLTQybFFKcVBPMG1ieW8xSTM0Z1NJRF9qR2htMmxzcWh1eXZ6?oc=5', '「スキマバイト」でトラブル なぜ', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9rd1dObXhpU2ZrcjlWcTdISU1UeWlqQXdSUzkxcG5GYjhNNjNEZjVYMk9aTC13aWhvbXd5bUNzTnUtNWhuVTN6R2dfWThpa2ZLeVN3cGhLWFdBclE5WmMwQWdSSUt1WDhNZWJibTJIWnpmV0ZFeUNOQ01UUWlsTDg?oc=5" class="link-main" target="_blank">
+          <div class="t">京都・小6男児行方不明から14日目 捜索続くも新しい手がかり見つからず 210件の情報も有力情報なし 京都・南丹市</div>
+          <div class="s">京都男児不明、未だ手がかりなし</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTE9rd1dObXhpU2ZrcjlWcTdISU1UeWlqQXdSUzkxcG5GYjhNNjNEZjVYMk9aTC13aWhvbXd5bUNzTnUtNWhuVTN6R2dfWThpa2ZLeVN3cGhLWFdBclE5WmMwQWdSSUt1WDhNZWJibTJIWnpmV0ZFeUNOQ01UUWlsTDg?oc=5', '京都・小6男児行方不明から14日目 捜索続くも新しい手がかり見つからず 210件の情報も有力情報なし 京都・南丹市', this)">📌 後で</div>
+      </div></section><section id="stars"><h2 class="head">🌟 推しグループ</h2>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/b7d6a718f597e3538c7c61311bcdd7ade014f917?source=rss" class="link-main" target="_blank">
+          <div class="t">ILLIT、それぞれが似ている動物と交流！4thミニアルバムのコンセプトフォト＆フィルム第1弾を公開</div>
+          <div class="s">ILLITが新作のコンセプトを公開。メンバーたちが自分に似た動物たちと交流する幻想的なビジュアルで期待感を高めている。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/b7d6a718f597e3538c7c61311bcdd7ade014f917?source=rss', 'ILLIT、それぞれが似ている動物と交流！4thミニアルバムのコンセプトフォト＆フィルム第1弾を公開', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/049a668529d3593ff0d789f507e388e250019d34?source=rss" class="link-main" target="_blank">
+          <div class="t">AB6IX、ボーカルコンテンツ「NORAEBANG LIVE」に登場！</div>
+          <div class="s">AB6IXが歌唱力を存分に発揮する「NORAEBANG LIVE」に出演。各メンバーの個性的なボーカルが光るライブを披露した。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/049a668529d3593ff0d789f507e388e250019d34?source=rss', 'AB6IX、ボーカルコンテンツ「NORAEBANG LIVE」に登場！', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/e07a99e17c1d8a0577551aee3b3094438e747937?source=rss" class="link-main" target="_blank">
+          <div class="t">IVE ウォニョン、美しいロングヘア！非現実的なビジュアルに驚き</div>
+          <div class="s">IVEウォニョンが美しいロングヘア姿を披露。その圧倒的で非現実的なビジュアルが、ファンの間で大きな話題を呼んでいる。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/e07a99e17c1d8a0577551aee3b3094438e747937?source=rss', 'IVE ウォニョン、美しいロングヘア！非現実的なビジュアルに驚き', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/df51c9b38b7dc0be1fa867a8281a065ed645957e?source=rss" class="link-main" target="_blank">
+          <div class="t">LE SSERAFIM・KAZUHA、カメラ映えするメイクのコツを明かす「なるべく薄く」</div>
+          <div class="s">カズハが明かすカメラ映えメイク術。厚塗りを避け、肌の質感を活かす「なるべく薄く」仕上げるコツを伝授した。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/df51c9b38b7dc0be1fa867a8281a065ed645957e?source=rss', 'LE SSERAFIM・KAZUHA、カメラ映えするメイクのコツを明かす「なるべく薄く」', this)">📌 後で</div>
+      </div></section><section id="sports"><h2 class="head">⚾ 巨人・スポーツ</h2>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/c797757bce52310a5c1d42f6b3b471251376fe92?source=rss" class="link-main" target="_blank">
+          <div class="t">DeNA・ビシエド、ピンチでファインプレー！ 巨人主砲のライナーをダイビングキャッチで併殺に</div>
+          <div class="s">DeNAビシエドが巨人の攻撃を阻む好守。強烈なライナーをダイビングキャッチし、併殺に仕留めてピンチを救った。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/c797757bce52310a5c1d42f6b3b471251376fe92?source=rss', 'DeNA・ビシエド、ピンチでファインプレー！ 巨人主砲のライナーをダイビングキャッチで併殺に', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/c23bff32e8da6a9cefb32ee1b7b990ac571e100c?source=rss" class="link-main" target="_blank">
+          <div class="t">巨人・阿部采配ズバリ、エンドラン成功直後に今季無安打だった代打大城卓三が劇的逆転3ラン</div>
+          <div class="s">阿部監督の采配が的中。ヒットエンドランで好機を広げ、不振の大城卓三を代打に送り、最高の結果である逆転弾を呼び込んだ。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/c23bff32e8da6a9cefb32ee1b7b990ac571e100c?source=rss', '巨人・阿部采配ズバリ、エンドラン成功直後に今季無安打だった代打大城卓三が劇的逆転3ラン', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/a2364c56c249686463e5f7dd3465847b7d0447a5?source=rss" class="link-main" target="_blank">
+          <div class="t">【巨人】井上温大、今季初先発７回１失点好投　力強い直球とキレの良いスライダー軸に丁寧な投球</div>
+          <div class="s">巨人・井上温大が今季初先発で7回1失点の快投。8奪三振を記録し、阿部監督の期待に応える復活のマウンドとなった。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/a2364c56c249686463e5f7dd3465847b7d0447a5?source=rss', '【巨人】井上温大、今季初先発７回１失点好投　力強い直球とキレの良いスライダー軸に丁寧な投球', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/29b73de105a7aa08a71788e29eeb49f5104aa22d?source=rss" class="link-main" target="_blank">
+          <div class="t">【巨人】大城卓三が代打で値千金の逆転３ラン！今季スタメンなく、今季初安打で井上に白星の権利</div>
+          <div class="s">巨人・大城卓三が代打で劇的な逆転3ラン。今季無安打に苦しんでいた主砲が、スタメンを外れた悔しさを晴らす最高の結果を出した。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/29b73de105a7aa08a71788e29eeb49f5104aa22d?source=rss', '【巨人】大城卓三が代打で値千金の逆転３ラン！今季スタメンなく、今季初安打で井上に白星の権利', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/af9cf49f72686f01bddfd0aa8ef53b8e6fe3f370?source=rss" class="link-main" target="_blank">
+          <div class="t">【巨人】「すしレース」アナゴが今季初勝利！後続８貫全く寄せ付けず…徹底先行で一気に押し切る</div>
+          <div class="s">巨人名物「すしレース」でアナゴが今季初勝利。逃げのスタイルで他のネタを寄せ付けず、球場を大いに盛り上げた。</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/af9cf49f72686f01bddfd0aa8ef53b8e6fe3f370?source=rss', '【巨人】「すしレース」アナゴが今季初勝利！後続８貫全く寄せ付けず…徹底先行で一気に押し切る', this)">📌 後で</div>
+      </div></section><section id="teams"><h2 class="head">🏆 マイチーム</h2></section><section id="ai-tech"><h2 class="head">🤖 AI・技術</h2>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/1ee3f94f3ebb61919d9c73ee9af67d4ad12b327b?source=rss" class="link-main" target="_blank">
+          <div class="t">「AIが人間を使う」時代が訪れる、AIエージェントの驚くべき新トレンド</div>
+          <div class="s">AIが人間を使う新時代の予兆</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/1ee3f94f3ebb61919d9c73ee9af67d4ad12b327b?source=rss', '「AIが人間を使う」時代が訪れる、AIエージェントの驚くべき新トレンド', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/3f77e48dcbbd7edc840dfc87a4c6c9db07609f6f?source=rss" class="link-main" target="_blank">
+          <div class="t">テック業界に広がる「AIによる人員の削減」。オラクルでも大規模レイオフ</div>
+          <div class="s">オラクルでAI導入に伴う解雇</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/3f77e48dcbbd7edc840dfc87a4c6c9db07609f6f?source=rss', 'テック業界に広がる「AIによる人員の削減」。オラクルでも大規模レイオフ', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/8b5107b1483d7cf37a4cdd7b8e52b947bba97dbb?source=rss" class="link-main" target="_blank">
+          <div class="t">「Claude」で「OpenClaw」などの利用がサブスク対象外に　API利用や追加使用量購入が必要</div>
+          <div class="s">Claude一部機能がサブスク外へ</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/8b5107b1483d7cf37a4cdd7b8e52b947bba97dbb?source=rss', '「Claude」で「OpenClaw」などの利用がサブスク対象外に　API利用や追加使用量購入が必要', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss" class="link-main" target="_blank">
+          <div class="t">【速報】メタプラネット、ビットコイン保有量4万枚を突破──世界3位に／Google、量子技術によるビットコイン暗号解読は「想定よりも容易」と指摘</div>
+          <div class="s">メタプラ、BTC保有世界3位に</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss', '【速報】メタプラネット、ビットコイン保有量4万枚を突破──世界3位に／Google、量子技術によるビットコイン暗号解読は「想定よりも容易」と指摘', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/9ce4bf432888113278a93238f37e179c1d471000?source=rss" class="link-main" target="_blank">
+          <div class="t">東大とNECを「AI分野での産学協創協定締結」に突き動かしたものとは</div>
+          <div class="s">東大とNECがAI産学連携を締結</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/9ce4bf432888113278a93238f37e179c1d471000?source=rss', '東大とNECを「AI分野での産学協創協定締結」に突き動かしたものとは', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/4aba6edfaf78bebdbaa6a23719f319fe733dfc79?source=rss" class="link-main" target="_blank">
+          <div class="t">OpenAIの“AGI担当CEO”シモ氏が療養休職　ライトキャップCOOが“特別プロジェクト”担当に</div>
+          <div class="s">OpenAI幹部休職と担当の交代</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/4aba6edfaf78bebdbaa6a23719f319fe733dfc79?source=rss', 'OpenAIの“AGI担当CEO”シモ氏が療養休職　ライトキャップCOOが“特別プロジェクト”担当に', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a?source=rss" class="link-main" target="_blank">
+          <div class="t">ザッカーバーグはAIに会社を任せるのか　Metaが仕掛ける「AIエージェント経営」</div>
+          <div class="s">Metaが狙うAIエージェント経営</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a?source=rss', 'ザッカーバーグはAIに会社を任せるのか　Metaが仕掛ける「AIエージェント経営」', this)">📌 後で</div>
+      </div>
+      <div class="item">
+        <a href="https://news.yahoo.co.jp/articles/d342ff68a7a34cbc3eecc66b6b73acc2cec15ac3?source=rss" class="link-main" target="_blank">
+          <div class="t">AI量産アプリがあふれるApp Store、審査遅延で苦しむ真面目な開発者たち</div>
+          <div class="s">AI量産でAppStoreの審査遅延</div>
+        </a>
+        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/d342ff68a7a34cbc3eecc66b6b73acc2cec15ac3?source=rss', 'AI量産アプリがあふれるApp Store、審査遅延で苦しむ真面目な開発者たち', this)">📌 後で</div>
+      </div><details class="archive"><summary>＋ 過去のニュース (2件)</summary>
+      <a href="https://news.yahoo.co.jp/articles/7de1366b48a17f2df00a603e804b3fdedb401969?source=rss" class="item-old" target="_blank">発売待ち遠しいiPhone 18、Plus復活ある？Air 2どうなる？　そして注目の「折りたたみ式iPhone」発売いつか</a><a href="https://news.yahoo.co.jp/articles/a3020eedbe54eea4f433ccb15055f25036b15007?source=rss" class="item-old" target="_blank">Claude Codeソースコード流出から判明した次世代AIエージェントの驚くべき全貌</a></details></section></main></body></html>
