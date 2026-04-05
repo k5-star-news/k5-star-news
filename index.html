@@ -1,282 +1,226 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { background: #000; color: #fff; font-family: -apple-system, sans-serif; padding: 10px; margin: 0; }
-    section { background: #0c0c0c; padding: 12px; border-radius: 12px; border: 1px solid #222; margin-bottom: 15px; }
-    .head { font-size: 20px; font-weight: 900; margin-bottom: 10px; border-bottom: 2px solid #333; padding-bottom: 5px; }
-    .item { display: flex; align-items: stretch; border-bottom: 1px solid #1a1a1a; }
-    .link-main { flex-grow: 1; text-decoration: none; padding: 15px 10px 15px 0; }
-    .t { font-size: 1.25rem; font-weight: 900; color: #31a1ff; line-height: 1.3; }
-    .s { font-size: 15px; color: #bbb; font-weight: 700; margin-top: 6px; line-height: 1.4; }
-    @media (min-width: 600px) { .t { font-size: 1rem; } .s { font-size: 14px; } }
-    
-    .btn-pin { display: flex; align-items: center; justify-content: center; background: #222; color: #ffcc00; padding: 0 15px; font-size: 14px; font-weight: bold; border-left: 1px solid #333; cursor: pointer; user-select: none; }
-    .pin-box { border: 2px solid #ffcc00; background: #1a1500; }
-    .pin-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #4d3e00; }
-    .pin-link { color: #fff; text-decoration: none; font-weight: bold; flex-grow: 1; padding-right: 10px; }
-    .pin-delete { background: #ff3b30; color: #fff; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
-    
-    summary { padding: 10px; cursor: pointer; color: #666; font-weight: 800; border-top: 1px dashed #222; }
-    .item-old { display: block; text-decoration: none; padding: 8px 0; color: #666; font-size: 13px; }
+    body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 10px; }
+    .grid { display: flex; flex-direction: column; gap: 15px; }
+    /* PC: カード型5列 */
+    @media (min-width: 900px) { .grid { display: grid; grid-template-columns: repeat(5, 1fr); align-items: start; } .pin-box { grid-column: span 5; } }
+    .card { background: #0c0c0c; padding: 12px; border-radius: 12px; border: 1px solid #222; }
+    .head { font-size: 18px; font-weight: 900; margin: 0 0 10px 0; border-bottom: 2px solid #333; padding-bottom: 5px; }
+    .item { display: flex; border-bottom: 1px solid #1a1a1a; }
+    .l-m { flex: 1; text-decoration: none; padding: 12px 5px 12px 0; }
+    /* Watch用: タイトル極太、要約は控えめ */
+    .t { font-size: 1.2rem; font-weight: 900; color: #31a1ff; line-height: 1.2; }
+    .tm { font-size: 0.75rem; color: #666; font-weight: normal; }
+    .s { font-size: 0.9rem; color: #aaa; font-weight: 700; margin-top: 4px; line-height: 1.3; }
+    @media (min-width: 900px) { .t { font-size: 0.95rem; } .s { font-size: 0.85rem; } }
+    .b-p { display: flex; align-items: center; justify-content: center; color: #ffcc00; width: 40px; cursor: pointer; border-left: 1px solid #222; }
+    .pin-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #332b00; }
+    .p-l { color: #fff; text-decoration: none; font-size: 14px; font-weight: bold; }
+    .p-d { color: #ff3b30; font-weight: 900; cursor: pointer; padding: 0 5px; }
   </style>
   <script>
-    // 画面遷移なしでGASに保存する魔法のスクリプト
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzzBma248sj2VobvggeD6wsZRMBLoyKlYlcCGKwHgfExleSGsC6H389ZNygtA2nux6Q/exec";
-    function savePin(url, title, btn) {
-      if(btn.innerText === "📌 保存済") return;
-      btn.innerText = "📌 保存済";
-      btn.style.color = "#777";
-      fetch(WEB_APP_URL + "?action=pin&url=" + encodeURIComponent(url) + "&title=" + encodeURIComponent(title), { mode: 'no-cors' });
-    }
-    function unpinNews(url, divId) {
-      document.getElementById(divId).style.display = 'none';
-      fetch(WEB_APP_URL + "?action=unpin&url=" + encodeURIComponent(url), { mode: 'no-cors' });
-    }
+    const W = "https://script.google.com/macros/s/AKfycbzzBma248sj2VobvggeD6wsZRMBLoyKlYlcCGKwHgfExleSGsC6H389ZNygtA2nux6Q/exec";
+    function savePin(u,t,b){ if(b.innerText==="✔")return; b.innerText="✔"; b.style.color="#555"; fetch(W+"?action=pin&url="+encodeURIComponent(u)+"&title="+encodeURIComponent(t),{mode:'no-cors'}); }
+    function unpin(u,d){ document.getElementById(d).style.display='none'; fetch(W+"?action=unpin&url="+encodeURIComponent(u),{mode:'no-cors'}); }
   </script>
-  </head><body><div style="text-align:right;padding:5px;font-size:11px;color:#444;">更新: 18:19</div>
-  <section class="pin-box"><h2 class="head" style="color:#ffcc00;">📌 あとで読む (1件)</h2>
-      
-        <div class="pin-item" id="pin-0">
-          <a href="https://news.yahoo.co.jp/articles/1cc4ed6de50be7161a37185c033675782ed9f416?source=rss" target="_blank" class="pin-link">IVE イソ、春の女神に変身！グラビアで人形のようなビジュアルを披露</a>
-          <div class="pin-delete" onclick="unpinNews('https://news.yahoo.co.jp/articles/1cc4ed6de50be7161a37185c033675782ed9f416?source=rss', 'pin-0')">✖ 読了</div>
-        </div>
-      
-    </section><section class="weekly-box"><h2 class="head">決算：先週のまとめ</h2>
-    <div class="weekly-item"><strong>主要:</strong> undefined</div>
-    <div class="weekly-item"><strong>推し:</strong> undefined</div>
-    <div class="weekly-item"><strong>スポーツ:</strong> undefined</div>
-    <div class="weekly-item"><strong>AI:</strong> undefined</div></section><main><section id="major"><h2 class="head">🌍 主要ニュース</h2>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE53V0tsLXhmZmpJZFZkLXluekczRHpMRUYwRUVfTm1JcFRSM2xpODBBQnRpdzJ3SFZWNUxWYm9XUU5lMDZnYURRVTE0RUpUY3V1?oc=5" class="link-main" target="_blank">
-          <div class="t">中国軍衛星「中軌道」も運用 分析</div>
+  </head><body>
+  <div style="text-align:right;font-size:10px;color:#444;margin-bottom:5px;">更新: 18:35</div>
+  <div class="grid"><section class="card" id="major"><h2 class="head">🌍 主要</h2><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/a9b9c313790fe062345001aafa82544e687d6ecf" class="l-m" target="_blank">
+          <div class="t">LE SSERAFIMのKAZUHAが美脚際立つ黒のミニ丈ワンピ姿で登場 <span class="tm">(18:05)</span></div>
+          <div class="s">カズハがミニワンピで美脚を披露</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a9b9c313790fe062345001aafa82544e687d6ecf','LE SSERAFIMのKAZUHAが美脚際立つ黒のミニ丈ワンピ姿で登場',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a" class="l-m" target="_blank">
+          <div class="t">ザッカーバーグはAIに会社を任せるのか Metaが仕掛けるAI経営 <span class="tm">(12:00)</span></div>
+          <div class="s">メタがＡＩエージェント経営導入</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a','ザッカーバーグはAIに会社を任せるのか Metaが仕掛けるAI経営',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/a3020eedbe54eea4f433ccb15055f25036b15007" class="l-m" target="_blank">
+          <div class="t">Claude Codeソースコード流出から判明した次世代AIエージェントの全貌 <span class="tm">(14:40)</span></div>
+          <div class="s">クロードのコード流出で全貌判明</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a3020eedbe54eea4f433ccb15055f25036b15007','Claude Codeソースコード流出から判明した次世代AIエージェントの全貌',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.google.com/articles/CBMif0FVX3lxTE1FNmlGWDUyMlpGX1RTNWhyS01vdy1xaVdZRF85bC02R19xdzdoVkVScVhWbzFfaC1LWTJhRDIwQnlOTEw3VUNveFBnR3RzSEFjVVdlbFJGZzd1MTJUTWF5T1NNdGRIcnVEQkFPNzFNZUFFbzFtUmIzRDI0Ui1GN00" class="l-m" target="_blank">
+          <div class="t">元死刑囚次男「オウム、信仰せず」 公安庁検査は「違法」 - Yahoo!ニュース <span class="tm">(07:08)</span></div>
+          <div class="s">オウム元死刑囚の次男が国賠提訴</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.google.com/articles/CBMif0FVX3lxTE1FNmlGWDUyMlpGX1RTNWhyS01vdy1xaVdZRF85bC02R19xdzdoVkVScVhWbzFfaC1LWTJhRDIwQnlOTEw3VUNveFBnR3RzSEFjVVdlbFJGZzd1MTJUTWF5T1NNdGRIcnVEQkFPNzFNZUFFbzFtUmIzRDI0Ui1GN00','元死刑囚次男「オウム、信仰せず」 公安庁検査は「違法」 - Yahoo!ニュース',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.google.com/articles/CBMif0FVX3lxTE5UeE03VGc0OFVGRjlOd1Fpd2p1MnpuOHZGTExwLVZ0THYzLV9PU2xJdVc0dG5DRjU5cEVSLUVmRHF2M3NGY1ZHSDF0eTFScndXTFNWRjVJdVBoNXpzdndwTUI3S0YtSnVMc2d6T0w0SVk3ekdocmpfMHRjY0R0ODg" class="l-m" target="_blank">
+          <div class="t">「派遣切り」の次は「タイミードタキャン」…未払い賃金300億円疑惑 - Yahoo!ニュース <span class="tm">(09:15)</span></div>
+          <div class="s">スキマバイトでトラブル急増の実態</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.google.com/articles/CBMif0FVX3lxTE5UeE03VGc0OFVGRjlOd1Fpd2p1MnpuOHZGTExwLVZ0THYzLV9PU2xJdVc0dG5DRjU5cEVSLUVmRHF2M3NGY1ZHSDF0eTFScndXTFNWRjVJdVBoNXpzdndwTUI3S0YtSnVMc2d6T0w0SVk3ekdocmpfMHRjY0R0ODg','「派遣切り」の次は「タイミードタキャン」…未払い賃金300億円疑惑 - Yahoo!ニュース',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.google.com/articles/CBMiUEFVX3lxTE9KSWpYRE5Xc3Nuc0oxTVRVS0FCZXl5UFBvSDZVbG9zSEYyMFFscHNWbnZDWFpiZmhhbW5KbjY3TU10ZWZ6TEh3STEyQ00xZVIx" class="l-m" target="_blank">
+          <div class="t">イランの原発付近に攻撃 1人死亡 - Yahoo!ニュース <span class="tm">(21:57)</span></div>
+          <div class="s">イランの原発付近に攻撃１人死亡</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.google.com/articles/CBMiUEFVX3lxTE9KSWpYRE5Xc3Nuc0oxTVRVS0FCZXl5UFBvSDZVbG9zSEYyMFFscHNWbnZDWFpiZmhhbW5KbjY3TU10ZWZ6TEh3STEyQ00xZVIx','イランの原発付近に攻撃 1人死亡 - Yahoo!ニュース',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.google.com/articles/CBMiUEFVX3lxTE5LcGtuZ0RDdm5mVV90a2s2ZG1KSHhpQ0FtTC0xM3JfTVdPcGNISkEyM2NLR2FsblJhSzQxczJPSmlnOFZHdHUwMmpFLUh6RDBs" class="l-m" target="_blank">
+          <div class="t">首相がベトナム・豪州訪問へ 調整 - Yahoo!ニュース <span class="tm">(17:45)</span></div>
+          <div class="s">首相がベトナムと豪州を訪問調整</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.google.com/articles/CBMiUEFVX3lxTE5LcGtuZ0RDdm5mVV90a2s2ZG1KSHhpQ0FtTC0xM3JfTVdPcGNISkEyM2NLR2FsblJhSzQxczJPSmlnOFZHdHUwMmpFLUh6RDBs','首相がベトナム・豪州訪問へ 調整 - Yahoo!ニュース',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE53V0tsLXhmZmpJZFZkLXluekczRHpMRUYwRUVfTm1JcFRSM2xpODBBQnRpdzJ3SFZWNUxWYm9XUU5lMDZnYURRVTE0RUpUY3V1?oc=5" class="l-m" target="_blank">
+          <div class="t">中国軍衛星「中軌道」も運用 分析 <span class="tm">(18:19)</span></div>
           <div class="s">中国軍の衛星運用拡大</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTE53V0tsLXhmZmpJZFZkLXluekczRHpMRUYwRUVfTm1JcFRSM2xpODBBQnRpdzJ3SFZWNUxWYm9XUU5lMDZnYURRVTE0RUpUY3V1?oc=5', '中国軍衛星「中軌道」も運用 分析', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFBJd29PYjRmSzJBcFE2MmVxdDdZdlZoUURaSzFWSW5JLXhIbnhsQTZWOFRWby1sd1BiX2wtbklDNDdSYndJWGtabUFSRkhpWkkzUmZuWXBXUEEzaEd2OUFCUEZibjlzN0xUb2RkSVRxNDAxVGd6TktnSFFhSW0teVk?oc=5" class="link-main" target="_blank">
-          <div class="t">バルセロナ、ラ・リーガ連覇見えた！アトレティコとの3連戦初戦に勝利</div>
-          <div class="s">バルセロナが勝利</div>
-        </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTFBJd29PYjRmSzJBcFE2MmVxdDdZdlZoUURaSzFWSW5JLXhIbnhsQTZWOFRWby1sd1BiX2wtbklDNDdSYndJWGtabUFSRkhpWkkzUmZuWXBXUEEzaEd2OUFCUEZibjlzN0xUb2RkSVRxNDAxVGd6TktnSFFhSW0teVk?oc=5', 'バルセロナ、ラ・リーガ連覇見えた！アトレティコとの3連戦初戦に勝利', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTFBRWVlLSzY4bXYyc25CUXdRMkNyRVRjWWRRUTcwbEZGWXhCbnpiaExGbElGeDBKeGs5YkhaNnBnNXZ6cXRncDB1eHU2UGY2NE5F?oc=5" class="link-main" target="_blank">
-          <div class="t">G1大阪杯 クロワデュノールV</div>
-          <div class="s">クロワデュノールV</div>
-        </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTFBRWVlLSzY4bXYyc25CUXdRMkNyRVRjWWRRUTcwbEZGWXhCbnpiaExGbElGeDBKeGs5YkhaNnBnNXZ6cXRncDB1eHU2UGY2NE5F?oc=5', 'G1大阪杯 クロワデュノールV', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTFBZc1FwQm5tTW4zZ0pFSlpXcXhCZENZQ3hNMG5QTEhwTVRsS05zLWlSYkU4aWFSSVIyYWJhcHp5akN3b2FOQl9FVXVrX0gtbl9P?oc=5" class="link-main" target="_blank">
-          <div class="t">5日は花粉が大量飛散予想 対策を</div>
-          <div class="s">5日は花粉が大量飛散の予想</div>
-        </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTFBZc1FwQm5tTW4zZ0pFSlpXcXhCZENZQ3hNMG5QTEhwTVRsS05zLWlSYkU4aWFSSVIyYWJhcHp5akN3b2FOQl9FVXVrX0gtbl9P?oc=5', '5日は花粉が大量飛散予想 対策を', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTFBhRVcwR25WcWhJdHMxakNQaEhTeW13YnR2YXZjTFIwMjhfMFl3TDh1Nmx5NFFHdUxNdHU2bXBJdmdxbzVqUWZNQk1PT3ZzZjRE?oc=5" class="link-main" target="_blank">
-          <div class="t">米 行方不明の戦闘機乗員を救出</div>
-          <div class="s">行方不明の米戦闘機員を救出</div>
-        </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTFBhRVcwR25WcWhJdHMxakNQaEhTeW13YnR2YXZjTFIwMjhfMFl3TDh1Nmx5NFFHdUxNdHU2bXBJdmdxbzVqUWZNQk1PT3ZzZjRE?oc=5', '米 行方不明の戦闘機乗員を救出', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1KUU1wMWhqV3FXeHB2cW9kMTQ1NlFpMmF4YTVWb2lzQllzUnQ3Z3ZhbG82Q0ZBT0dEbmFmS1pMQzdFbXFmdi1VWlJzZEhweTdF?oc=5" class="link-main" target="_blank">
-          <div class="t">春は「出張買い取り」増 なぜ依頼 - Yahoo!ニュース</div>
-          <div class="s">春の出張買い取りが増加</div>
-        </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTE1KUU1wMWhqV3FXeHB2cW9kMTQ1NlFpMmF4YTVWb2lzQllzUnQ3Z3ZhbG82Q0ZBT0dEbmFmS1pMQzdFbXFmdi1VWlJzZEhweTdF?oc=5', '春は「出張買い取り」増 なぜ依頼 - Yahoo!ニュース', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9fMjdzZjNLX1hUdkFEN08zOUJjT0FEcWZUVjBtc0JrNGZnVjdNRXZrbHRxcWt6OWg1NVJFN2VkNWpRVEpmZ0hMLUZ6LS1RSzYwdmwtbklic0x2dnU2d3dTOTFfaXN3NUZoWkhSMkxsVzRFeURHeTh3MGxqQmNuMzQ?oc=5" class="link-main" target="_blank">
-          <div class="t">首相動静（4月4日）（時事通信） - Yahoo!ニュース</div>
-          <div class="s">4月4日の首相動静</div>
-        </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTE9fMjdzZjNLX1hUdkFEN08zOUJjT0FEcWZUVjBtc0JrNGZnVjdNRXZrbHRxcWt6OWg1NVJFN2VkNWpRVEpmZ0hMLUZ6LS1RSzYwdmwtbklic0x2dnU2d3dTOTFfaXN3NUZoWkhSMkxsVzRFeURHeTh3MGxqQmNuMzQ?oc=5', '首相動静（4月4日）（時事通信） - Yahoo!ニュース', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFBJd29PYjRmSzJBcFE2MmVxdDdZdlZoUURaSzFWSW5JLXhIbnhsQTZWOFRWby1sd1BiX2wtbklDNDdSYndJWGtabUFSRkhpWkkzUmZuWXBXUEEzaEd2OUFCUEZibjlzN0xUb2RkSVRxNDAxVGd6TktnSFFhSW0teVk?oc=5" class="link-main" target="_blank">
-          <div class="t">バルセロナ、ラ・リーガ連覇見えた！アトレティコとの3連戦初戦に勝利…2位レアル・マドリーとの勝ち点差を7まで広げる（GOAL） - Yahoo!ニュース</div>
-          <div class="s">バルセロナがアトレティコとの3連戦初戦に勝利し、2位レアル・マドリードとの勝ち点差を7に広げ連覇へ前進。</div>
-        </a>
-        <div class="btn-pin" onclick="savePin('https://news.google.com/rss/articles/CBMif0FVX3lxTFBJd29PYjRmSzJBcFE2MmVxdDdZdlZoUURaSzFWSW5JLXhIbnhsQTZWOFRWby1sd1BiX2wtbklDNDdSYndJWGtabUFSRkhpWkkzUmZuWXBXUEEzaEd2OUFCUEZibjlzN0xUb2RkSVRxNDAxVGd6TktnSFFhSW0teVk?oc=5', 'バルセロナ、ラ・リーガ連覇見えた！アトレティコとの3連戦初戦に勝利…2位レアル・マドリーとの勝ち点差を7まで広げる（GOAL） - Yahoo!ニュース', this)">📌 後で</div>
-      </div><details class="archive"><summary>＋ 過去のニュース (14件)</summary>
-      <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE14d0VBMjdXVHFhMnIxZ2k0OVJhQ2w1b3ZLNWN0azR3bVVIQ3FaZWVSR01ueGluVDEtaG5pMmZDSFZZeXhyX3JEUEJlZlJ2dkk3?oc=5" class="item-old" target="_blank">政府 燃料や石油製品を「仲介」 - Yahoo!ニュース</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFA1SmF0ck56U2YxRTJrZnVqb01mX0J4NUxZYTRaNmNOb05IMVlCcC1jSXR0OHN0cjlMSWhFdWFMTENrdjhfYlpRNTJZVnkwU3lQVFlHYzItV2loM1hlV2U3V0w4R0FpdFBiQl9Ua2ZNUEVrYXdoTDg3ZHRON0VBMGc?oc=5" class="item-old" target="_blank">政府、燃料供給を「仲介」 目詰まりに対処、相談呼び掛け（時事通信） - Yahoo!ニュース</a><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1JamRCU0JmWnV0V0VaWjZxaHdEWUViREZ6bGFaenF1aHZ3bVotLTQybFFKcVBPMG1ieW8xSTM0Z1NJRF9qR2htMmxzcWh1eXZ6?oc=5" class="item-old" target="_blank">「スキマバイト」でトラブル なぜ - Yahoo!ニュース</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9rd1dObXhpU2ZrcjlWcTdISU1UeWlqQXdSUzkxcG5GYjhNNjNEZjVYMk9aTC13aWhvbXd5bUNzTnUtNWhuVTN6R2dfWThpa2ZLeVN3cGhLWFdBclE5WmMwQWdSSUt1WDhNZWJibTJIWnpmV0ZFeUNOQ01UUWlsTDg?oc=5" class="item-old" target="_blank">京都・小6男児行方不明から14日目 捜索続くも新しい手がかり見つからず 210件の情報も有力情報なし 京都・南丹市 - Yahoo!ニュース</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5UeE03VGc0OFVGRjlOd1Fpd2p1MnpuOHZGTExwLVZ0THYzLV9PU2xJdVc0dG5DRjU5cEVSLUVmRHF2M3NGY1ZHSDF0eTFScndXTFNWRjVJdVBoNXpzdndwTUI3S0YtSnVMc2d6T0w0SVk3ekdocmpfMHRjY0R0ODg?oc=5" class="item-old" target="_blank">「派遣切り」の次は「タイミードタキャン」…未払い賃金300億円疑惑が浮上する「スキマバイト」の残酷な裏側 - Yahoo!ニュース</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFA1SmF0ck56U2YxRTJrZnVqb01mX0J4NUxZYTRaNmNOb05IMVlCcC1jSXR0OHN0cjlMSWhFdWFMTENrdjhfYlpRNTJZVnkwU3lQVFlHYzItV2loM1hlV2U3V0w4R0FpdFBiQl9Ua2ZNUEVrYXdoTDg3ZHRON0VBMGc?oc=5" class="item-old" target="_blank">政府、燃料供給を「仲介」 目詰まりに対処、相談呼び掛け</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9fMjdzZjNLX1hUdkFEN08zOUJjT0FEcWZUVjBtc0JrNGZnVjdNRXZrbHRxcWt6OWg1NVJFN2VkNWpRVEpmZ0hMLUZ6LS1RSzYwdmwtbklic0x2dnU2d3dTOTFfaXN3NUZoWkhSMkxsVzRFeURHeTh3MGxqQmNuMzQ?oc=5" class="item-old" target="_blank">首相動静（4月4日）</a><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1KUU1wMWhqV3FXeHB2cW9kMTQ1NlFpMmF4YTVWb2lzQllzUnQ3Z3ZhbG82Q0ZBT0dEbmFmS1pMQzdFbXFmdi1VWlJzZEhweTdF?oc=5" class="item-old" target="_blank">春は「出張買い取り」増 なぜ依頼</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFBmYjJDT1UyLS1raVh1OVQwMk41UVI1MzExWkVmM3hfM3lTZjFvVXNoRGhSOTJxcnNfTnVVcHl6RDJFcUt2UkxGNGRMbkNjLVFULWRFNW1tME50ZTA2bnYwTlJIZXVSaWV5RmtvMlB3aHZrdzdLSWZwR2VRWDJSUms?oc=5" class="item-old" target="_blank">「通常とは違うルート」 万全の体制だったと反対協 辺野古事故現場</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFBJd29PYjRmSzJBcFE2MmVxdDdZdlZoUURaSzFWSW5JLXhIbnhsQTZWOFRWby1sd1BiX2wtbklDNDdSYndJWGtabUFSRkhpWkkzUmZuWXBXUEEzaEd2OUFCUEZibjlzN0xUb2RkSVRxNDAxVGd6TktnSFFhSW0teVk?oc=5" class="item-old" target="_blank">バルセロナ、ラ・リーガ連覇見えた！アトレティコとの3連戦初戦に勝利…2位レアル・マドリーとの勝ち点差を7まで広げる</a><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE14d0VBMjdXVHFhMnIxZ2k0OVJhQ2w1b3ZLNWN0azR3bVVIQ3FaZWVSR01ueGluVDEtaG5pMmZDSFZZeXhyX3JEUEJlZlJ2dkk3?oc=5" class="item-old" target="_blank">政府 燃料や石油製品を「仲介」</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5UeE03VGc0OFVGRjlOd1Fpd2p1MnpuOHZGTExwLVZ0THYzLV9PU2xJdVc0dG5DRjU5cEVSLUVmRHF2M3NGY1ZHSDF0eTFScndXTFNWRjVJdVBoNXpzdndwTUI3S0YtSnVMc2d6T0w0SVk3ekdocmpfMHRjY0R0ODg?oc=5" class="item-old" target="_blank">「派遣切り」の次は「タイミードタキャン」…未払い賃金300億円疑惑が浮上する「スキマバイト」の残酷な裏側</a><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1JamRCU0JmWnV0V0VaWjZxaHdEWUViREZ6bGFaenF1aHZ3bVotLTQybFFKcVBPMG1ieW8xSTM0Z1NJRF9qR2htMmxzcWh1eXZ6?oc=5" class="item-old" target="_blank">「スキマバイト」でトラブル なぜ</a><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9rd1dObXhpU2ZrcjlWcTdISU1UeWlqQXdSUzkxcG5GYjhNNjNEZjVYMk9aTC13aWhvbXd5bUNzTnUtNWhuVTN6R2dfWThpa2ZLeVN3cGhLWFdBclE5WmMwQWdSSUt1WDhNZWJibTJIWnpmV0ZFeUNOQ01UUWlsTDg?oc=5" class="item-old" target="_blank">京都・小6男児行方不明から14日目 捜索続くも新しい手がかり見つからず 210件の情報も有力情報なし 京都・南丹市</a></details></section><section id="stars"><h2 class="head">🌟 推しグループ</h2>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/a9b9c313790fe062345001aafa82544e687d6ecf?source=rss" class="link-main" target="_blank">
-          <div class="t">LE SSERAFIMのKAZUHAが美脚際立つ黒のミニ丈ワンピ姿でメークのこだわり明かす</div>
+        <div class="b-p" onclick="savePin('https://news.google.com/rss/articles/CBMiUEFVX3lxTE53V0tsLXhmZmpJZFZkLXluekczRHpMRUYwRUVfTm1JcFRSM2xpODBBQnRpdzJ3SFZWNUxWYm9XUU5lMDZnYURRVTE0RUpUY3V1?oc=5','中国軍衛星「中軌道」も運用 分析',this)">📌</div>
+      </div></section><section class="card" id="stars"><h2 class="head">🌟 推し</h2><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/a9b9c313790fe062345001aafa82544e687d6ecf?source=rss" class="l-m" target="_blank">
+          <div class="t">LE SSERAFIMのKAZUHAが美脚際立つ黒のミニ丈ワンピ姿でメークのこだわり明かす <span class="tm">(18:19)</span></div>
           <div class="s">LE SSERAFIMのKAZUHAが黒のミニワンピ姿でイベントに登場。美の秘訣として、自分自身の肌を綺麗に見せるメイクのこだわりを明かした。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/a9b9c313790fe062345001aafa82544e687d6ecf?source=rss', 'LE SSERAFIMのKAZUHAが美脚際立つ黒のミニ丈ワンピ姿でメークのこだわり明かす', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss" class="link-main" target="_blank">
-          <div class="t">オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a9b9c313790fe062345001aafa82544e687d6ecf?source=rss','LE SSERAFIMのKAZUHAが美脚際立つ黒のミニ丈ワンピ姿でメークのこだわり明かす',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss" class="l-m" target="_blank">
+          <div class="t">オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！ <span class="tm">(18:01)</span></div>
           <div class="s">初のライブ開催決定</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss', 'オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/c6464252cf5f8008ef121334892d95f093cf05e9?source=rss" class="link-main" target="_blank">
-          <div class="t">『GUILTY GEAR -STRIVE-』公式設定資料集刊行　設定画やボイス集を網羅</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss','オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/c6464252cf5f8008ef121334892d95f093cf05e9?source=rss" class="l-m" target="_blank">
+          <div class="t">『GUILTY GEAR -STRIVE-』公式設定資料集刊行　設定画やボイス集を網羅 <span class="tm">(18:01)</span></div>
           <div class="s">ギルティ設定集刊行</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/c6464252cf5f8008ef121334892d95f093cf05e9?source=rss', '『GUILTY GEAR -STRIVE-』公式設定資料集刊行　設定画やボイス集を網羅', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/1cc4ed6de50be7161a37185c033675782ed9f416?source=rss" class="link-main" target="_blank">
-          <div class="t">IVE イソ、春の女神に変身！グラビアで人形のようなビジュアルを披露</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c6464252cf5f8008ef121334892d95f093cf05e9?source=rss','『GUILTY GEAR -STRIVE-』公式設定資料集刊行　設定画やボイス集を網羅',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/1cc4ed6de50be7161a37185c033675782ed9f416?source=rss" class="l-m" target="_blank">
+          <div class="t">IVE イソ、春の女神に変身！グラビアで人形のようなビジュアルを披露 <span class="tm">(18:01)</span></div>
           <div class="s">推しのイソが春のグラビアに登場。まさに人形のような透明感溢れる美貌を披露しています。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/1cc4ed6de50be7161a37185c033675782ed9f416?source=rss', 'IVE イソ、春の女神に変身！グラビアで人形のようなビジュアルを披露', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss" class="link-main" target="_blank">
-          <div class="t">【プリンセッション・オーケストラ】オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/1cc4ed6de50be7161a37185c033675782ed9f416?source=rss','IVE イソ、春の女神に変身！グラビアで人形のようなビジュアルを披露',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss" class="l-m" target="_blank">
+          <div class="t">【プリンセッション・オーケストラ】オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！ <span class="tm">(17:44)</span></div>
           <div class="s">プリンセッション・オーケストラの1stライブ開催が決定。ファン待望のオルケリア初単独ステージとなる。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss', '【プリンセッション・オーケストラ】オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/37648121d73b7c88d40bbea6c4b54bf4ca8c6958?source=rss" class="link-main" target="_blank">
-          <div class="t">IVE、アルバムの収録曲「Fashion」先行公開　韓国メディアも独自分析</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/e8c92e86870684f5ef9b6501c819d35ff019dd02?source=rss','【プリンセッション・オーケストラ】オルケリア１st LIVE「PRINCESS RESONANCE」開催決定！',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/37648121d73b7c88d40bbea6c4b54bf4ca8c6958?source=rss" class="l-m" target="_blank">
+          <div class="t">IVE、アルバムの収録曲「Fashion」先行公開　韓国メディアも独自分析 <span class="tm">(17:44)</span></div>
           <div class="s">IVEの新アルバム収録曲が先行公開。独自のコンセプトと「Fashion」というテーマについて現地メディアが分析。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/37648121d73b7c88d40bbea6c4b54bf4ca8c6958?source=rss', 'IVE、アルバムの収録曲「Fashion」先行公開　韓国メディアも独自分析', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/9cc1960999f1e6b866f22850b66eb60c48b49d1c?source=rss" class="link-main" target="_blank">
-          <div class="t">LE SSERAFIM・KAZUHA「考え方もすごくステキ」と喜び</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/37648121d73b7c88d40bbea6c4b54bf4ca8c6958?source=rss','IVE、アルバムの収録曲「Fashion」先行公開　韓国メディアも独自分析',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/9cc1960999f1e6b866f22850b66eb60c48b49d1c?source=rss" class="l-m" target="_blank">
+          <div class="t">LE SSERAFIM・KAZUHA「考え方もすごくステキ」と喜び <span class="tm">(17:44)</span></div>
           <div class="s">カズハが日本初上陸ブランドのイベントに登壇。美の秘訣やポジティブな考え方について自身の思いを語った。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/9cc1960999f1e6b866f22850b66eb60c48b49d1c?source=rss', 'LE SSERAFIM・KAZUHA「考え方もすごくステキ」と喜び', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/303dcc6d7d0a0f0e8c3e6dcba3d9581c4c3b54e9?source=rss" class="link-main" target="_blank">
-          <div class="t">LE SSERAFIMのKAZUHA、カメラ映えするメイクのコツは？“美の秘訣”を明かす「自分自身の肌を綺麗に見せたい」</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/9cc1960999f1e6b866f22850b66eb60c48b49d1c?source=rss','LE SSERAFIM・KAZUHA「考え方もすごくステキ」と喜び',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/303dcc6d7d0a0f0e8c3e6dcba3d9581c4c3b54e9?source=rss" class="l-m" target="_blank">
+          <div class="t">LE SSERAFIMのKAZUHA、カメラ映えするメイクのコツは？“美の秘訣”を明かす「自分自身の肌を綺麗に見せたい」 <span class="tm">(17:28)</span></div>
           <div class="s">KAZUHAが美の秘訣を語る</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/303dcc6d7d0a0f0e8c3e6dcba3d9581c4c3b54e9?source=rss', 'LE SSERAFIMのKAZUHA、カメラ映えするメイクのコツは？“美の秘訣”を明かす「自分自身の肌を綺麗に見せたい」', this)">📌 後で</div>
-      </div><details class="archive"><summary>＋ 過去のニュース (7件)</summary>
-      <a href="https://news.yahoo.co.jp/articles/2c291bfface9270c709d4e05956a5daf7089ed24?source=rss" class="item-old" target="_blank">LE SSERAFIM・KAZUHA、黒のミニ丈ベアトップドレス姿で日本初上陸ブランドのイベント登場「本当に光栄」</a><a href="https://news.yahoo.co.jp/articles/c7252e013af07a3486beab5d37b491b3b7a010ab?source=rss" class="item-old" target="_blank">LE SSERAFIMカズハ、ミニ丈黒ドレスで圧巻の脚線美披露 “カメラ映え”意識のメイク術明かす</a><a href="https://news.yahoo.co.jp/articles/8ac060945ca4d14a24221195e5dcc5c1b6869a4a?source=rss" class="item-old" target="_blank">LE SSERAFIMのKAZUHAが韓国コスメブランドのアンバサダーに</a><a href="https://news.yahoo.co.jp/articles/b7d6a718f597e3538c7c61311bcdd7ade014f917?source=rss" class="item-old" target="_blank">ILLIT、それぞれが似ている動物と交流！4thミニアルバムのコンセプトフォト＆フィルム第1弾を公開</a><a href="https://news.yahoo.co.jp/articles/049a668529d3593ff0d789f507e388e250019d34?source=rss" class="item-old" target="_blank">AB6IX、ボーカルコンテンツ「NORAEBANG LIVE」に登場！</a><a href="https://news.yahoo.co.jp/articles/e07a99e17c1d8a0577551aee3b3094438e747937?source=rss" class="item-old" target="_blank">IVE ウォニョン、美しいロングヘア！非現実的なビジュアルに驚き</a><a href="https://news.yahoo.co.jp/articles/df51c9b38b7dc0be1fa867a8281a065ed645957e?source=rss" class="item-old" target="_blank">LE SSERAFIM・KAZUHA、カメラ映えするメイクのコツを明かす「なるべく薄く」</a></details></section><section id="sports"><h2 class="head">⚾ 巨人・スポーツ</h2>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss" class="link-main" target="_blank">
-          <div class="t">巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾　2軍防御率は8.18に</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/303dcc6d7d0a0f0e8c3e6dcba3d9581c4c3b54e9?source=rss','LE SSERAFIMのKAZUHA、カメラ映えするメイクのコツは？“美の秘訣”を明かす「自分自身の肌を綺麗に見せたい」',this)">📌</div>
+      </div></section><section class="card" id="sports"><h2 class="head">⚾ 巨人</h2><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss" class="l-m" target="_blank">
+          <div class="t">巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾　2軍防御率は8.18に <span class="tm">(18:19)</span></div>
           <div class="s">巨人のエース戸郷翔征が2軍戦で5回7失点と炎上。元同僚の秋広優人に本塁打を浴びるなど、開幕に向けた調整に不安を残す結果となった。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss', '巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾　2軍防御率は8.18に', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/f2a565c928c9bb28ed5c84ee6a36d24999dfbcd3?source=rss" class="link-main" target="_blank">
-          <div class="t">【巨人】育成３年目の平山功太が支配下昇格　今年３人目で支配下枠は残り「５」</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss','巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾　2軍防御率は8.18に',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/f2a565c928c9bb28ed5c84ee6a36d24999dfbcd3?source=rss" class="l-m" target="_blank">
+          <div class="t">【巨人】育成３年目の平山功太が支配下昇格　今年３人目で支配下枠は残り「５」 <span class="tm">(18:19)</span></div>
           <div class="s">読売ジャイアンツの育成3年目、平山功太外野手が支配下選手登録された。今季3人目の昇格となり、チームの支配下枠は残り5となった。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/f2a565c928c9bb28ed5c84ee6a36d24999dfbcd3?source=rss', '【巨人】育成３年目の平山功太が支配下昇格　今年３人目で支配下枠は残り「５」', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/a7d91dfb4108855565dc9d6df91a5a333f765981?source=rss" class="link-main" target="_blank">
-          <div class="t">巨人・井上温大「燃え尽きてもいいと思って」初回から150キロ連発！　7回8K1失点で225日ぶり白星</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f2a565c928c9bb28ed5c84ee6a36d24999dfbcd3?source=rss','【巨人】育成３年目の平山功太が支配下昇格　今年３人目で支配下枠は残り「５」',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/a7d91dfb4108855565dc9d6df91a5a333f765981?source=rss" class="l-m" target="_blank">
+          <div class="t">巨人・井上温大「燃え尽きてもいいと思って」初回から150キロ連発！　7回8K1失点で225日ぶり白星 <span class="tm">(18:01)</span></div>
           <div class="s">井上が気迫の投球で復活！最速150キロを計測し7回1失点の快投。225日ぶりの勝利を飾る。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/a7d91dfb4108855565dc9d6df91a5a333f765981?source=rss', '巨人・井上温大「燃え尽きてもいいと思って」初回から150キロ連発！　7回8K1失点で225日ぶり白星', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss" class="link-main" target="_blank">
-          <div class="t">巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a7d91dfb4108855565dc9d6df91a5a333f765981?source=rss','巨人・井上温大「燃え尽きてもいいと思って」初回から150キロ連発！　7回8K1失点で225日ぶり白星',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss" class="l-m" target="_blank">
+          <div class="t">巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾 <span class="tm">(18:01)</span></div>
           <div class="s">エース戸郷が2軍で大苦戦。秋広に痛恨の被弾を喫するなど7失点KOで調整に不安を残す結果に。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss', '巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/bd664a0033fce66234dc17f83d19c9d088eee9c3?source=rss" class="link-main" target="_blank">
-          <div class="t">阿部監督「勝負をかけた」代走２連発　松本剛の完璧二盗でＤｅＮＡ送球せず二、三塁→大城卓三が劇的逆転弾</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3f8607d7ea3f36a467dccebda989a17de18cf474?source=rss','巨人・戸郷翔征が2軍戦で7失点KO　143キロ直球を元同僚・秋広優人に被弾',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/bd664a0033fce66234dc17f83d19c9d088eee9c3?source=rss" class="l-m" target="_blank">
+          <div class="t">阿部監督「勝負をかけた」代走２連発　松本剛の完璧二盗でＤｅＮＡ送球せず二、三塁→大城卓三が劇的逆転弾 <span class="tm">(17:44)</span></div>
           <div class="s">巨人は阿部監督の積極的な采配が的中。代走・松本剛の盗塁から好機を広げ、大城卓三の劇的な逆転本塁打で勝利した。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/bd664a0033fce66234dc17f83d19c9d088eee9c3?source=rss', '阿部監督「勝負をかけた」代走２連発　松本剛の完璧二盗でＤｅＮＡ送球せず二、三塁→大城卓三が劇的逆転弾', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/25bb9ddcc9a99d54c2c5b8ed03b6b12f96359db2?source=rss" class="link-main" target="_blank">
-          <div class="t">巨人新外国人のハワードが開幕わずか2試合で離脱　右アキレス腱炎の診断　杉内コーチが代役の昇格を明言</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/bd664a0033fce66234dc17f83d19c9d088eee9c3?source=rss','阿部監督「勝負をかけた」代走２連発　松本剛の完璧二盗でＤｅＮＡ送球せず二、三塁→大城卓三が劇的逆転弾',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/25bb9ddcc9a99d54c2c5b8ed03b6b12f96359db2?source=rss" class="l-m" target="_blank">
+          <div class="t">巨人新外国人のハワードが開幕わずか2試合で離脱　右アキレス腱炎の診断　杉内コーチが代役の昇格を明言 <span class="tm">(17:44)</span></div>
           <div class="s">期待の新助っ人ハワードが右アキレス腱炎で無念の離脱。杉内コーチは剛腕マタの昇格を示唆し、急場をしのぐ方針。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/25bb9ddcc9a99d54c2c5b8ed03b6b12f96359db2?source=rss', '巨人新外国人のハワードが開幕わずか2試合で離脱　右アキレス腱炎の診断　杉内コーチが代役の昇格を明言', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/878c27ea29656d77574d8cecd7af0c5a50ac864c?source=rss" class="link-main" target="_blank">
-          <div class="t">「燃え尽きてもいいと思って初回から飛ばして」井上温大が今季初先発で逆襲１勝…ヒーローインタビュー</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/25bb9ddcc9a99d54c2c5b8ed03b6b12f96359db2?source=rss','巨人新外国人のハワードが開幕わずか2試合で離脱　右アキレス腱炎の診断　杉内コーチが代役の昇格を明言',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/878c27ea29656d77574d8cecd7af0c5a50ac864c?source=rss" class="l-m" target="_blank">
+          <div class="t">「燃え尽きてもいいと思って初回から飛ばして」井上温大が今季初先発で逆襲１勝…ヒーローインタビュー <span class="tm">(17:28)</span></div>
           <div class="s">今季初先発の井上温大が「初回から飛ばす」覚悟の投球で1勝目。阿部監督もその気概を称賛し、大きな期待を寄せた。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/878c27ea29656d77574d8cecd7af0c5a50ac864c?source=rss', '「燃え尽きてもいいと思って初回から飛ばして」井上温大が今季初先発で逆襲１勝…ヒーローインタビュー', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/04bb235a3a0af325e4130c35c9072879fcba8b40?source=rss" class="link-main" target="_blank">
-          <div class="t">巨人・大城卓三「支えてくださった方々に感謝」の一発　今季初安打が代打逆転3ラン</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/878c27ea29656d77574d8cecd7af0c5a50ac864c?source=rss','「燃え尽きてもいいと思って初回から飛ばして」井上温大が今季初先発で逆襲１勝…ヒーローインタビュー',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/04bb235a3a0af325e4130c35c9072879fcba8b40?source=rss" class="l-m" target="_blank">
+          <div class="t">巨人・大城卓三「支えてくださった方々に感謝」の一発　今季初安打が代打逆転3ラン <span class="tm">(17:28)</span></div>
           <div class="s">不振に喘いでいた大城卓三が代打で起死回生の逆転3ラン。今季初安打が最高の結果となり、感謝の思いを口にした。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/04bb235a3a0af325e4130c35c9072879fcba8b40?source=rss', '巨人・大城卓三「支えてくださった方々に感謝」の一発　今季初安打が代打逆転3ラン', this)">📌 後で</div>
-      </div><details class="archive"><summary>＋ 過去のニュース (13件)</summary>
-      <a href="https://news.yahoo.co.jp/articles/350c7b82f6bfc9b6cb9907df9050843d1ca5fbbe?source=rss" class="item-old" target="_blank">田中千晴が絶体絶命の場面を抑える　延長10回に１死三塁のピンチ招くも連続三振</a><a href="https://news.yahoo.co.jp/articles/dd4dfdddd1904edb740dba9102b03584aff40841?source=rss" class="item-old" target="_blank">阿部慎之助監督が負傷で抹消のハワードに「あまり状態が良くなかったので」</a><a href="https://news.yahoo.co.jp/articles/1b1ec86923954097315d08316812afc5daa2cc84?source=rss" class="item-old" target="_blank">巨人・阿部監督 大城の代打逆転3ランに「昨日のヘッドスライディングを見て熱いものを感じた」</a><a href="https://news.yahoo.co.jp/articles/f5834d277fca52ded298c1044bf6423002a0e07c?source=rss" class="item-old" target="_blank">巨人・大城卓三は「最高!!」 劇的弾にファン感涙…絵になるバットフリップは「たまんねぇ」</a><a href="https://news.yahoo.co.jp/articles/198d3cab1e7e1ce53c1dbda423c874806e0a349e?source=rss" class="item-old" target="_blank">巨人マルティネスが今季初登板で初セーブ　1点差に迫られるも通算213セーブ目</a><a href="https://news.yahoo.co.jp/articles/0405ed2383ebe54d66f57ad8b2bc48640b7e77a6?source=rss" class="item-old" target="_blank">【巨人】阿部監督、ここ一番で代打・大城卓三の理由「昨日のヘッドスライディングを見て熱いものを感じたので」値千金の逆転弾</a><a href="https://news.yahoo.co.jp/articles/8f2272c81cfd05b310b98ff3e4837c4e126ebd28?source=rss" class="item-old" target="_blank">【巨人】大勢が連投　１０球で３者凡退に抑えて４試合連続無失点</a><a href="https://news.yahoo.co.jp/articles/31c5d547000224347a082f52ce3c2b06f93d0899?source=rss" class="item-old" target="_blank">巨人、逆転勝利で貯金1！ 代打・大城が今季初安打の3ラン、昇格即先発の井上が7回1失点で今季初白星、マルティネスも今季初セーブ</a><a href="https://news.yahoo.co.jp/articles/c797757bce52310a5c1d42f6b3b471251376fe92?source=rss" class="item-old" target="_blank">DeNA・ビシエド、ピンチでファインプレー！ 巨人主砲のライナーをダイビングキャッチで併殺に</a><a href="https://news.yahoo.co.jp/articles/c23bff32e8da6a9cefb32ee1b7b990ac571e100c?source=rss" class="item-old" target="_blank">巨人・阿部采配ズバリ、エンドラン成功直後に今季無安打だった代打大城卓三が劇的逆転3ラン</a><a href="https://news.yahoo.co.jp/articles/a2364c56c249686463e5f7dd3465847b7d0447a5?source=rss" class="item-old" target="_blank">【巨人】井上温大、今季初先発７回１失点好投　力強い直球とキレの良いスライダー軸に丁寧な投球</a><a href="https://news.yahoo.co.jp/articles/29b73de105a7aa08a71788e29eeb49f5104aa22d?source=rss" class="item-old" target="_blank">【巨人】大城卓三が代打で値千金の逆転３ラン！今季スタメンなく、今季初安打で井上に白星の権利</a><a href="https://news.yahoo.co.jp/articles/af9cf49f72686f01bddfd0aa8ef53b8e6fe3f370?source=rss" class="item-old" target="_blank">【巨人】「すしレース」アナゴが今季初勝利！後続８貫全く寄せ付けず…徹底先行で一気に押し切る</a></details></section><section id="teams"><h2 class="head">🏆 マイチーム</h2>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/85dce0fdb9eb95848f98e6f0d5031d73faea804c?source=rss" class="link-main" target="_blank">
-          <div class="t">【J1結果速報】2度のリードを守り切れず…浦和レッズ、逆転負けで痛恨の4連敗…川崎フロンターレは河原創が劇的ミドル弾！</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/04bb235a3a0af325e4130c35c9072879fcba8b40?source=rss','巨人・大城卓三「支えてくださった方々に感謝」の一発　今季初安打が代打逆転3ラン',this)">📌</div>
+      </div></section><section class="card" id="teams"><h2 class="head">🏆 チーム</h2><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/85dce0fdb9eb95848f98e6f0d5031d73faea804c?source=rss" class="l-m" target="_blank">
+          <div class="t">【J1結果速報】2度のリードを守り切れず…浦和レッズ、逆転負けで痛恨の4連敗…川崎フロンターレは河原創が劇的ミドル弾！ <span class="tm">(18:19)</span></div>
           <div class="s">J1リーグで浦和レッズが2度のリードを奪うも逆転を許し、痛恨の4連敗。一方の川崎フロンターレは、河原創の劇的ミドルシュートで勝利を掴んだ。</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/85dce0fdb9eb95848f98e6f0d5031d73faea804c?source=rss', '【J1結果速報】2度のリードを守り切れず…浦和レッズ、逆転負けで痛恨の4連敗…川崎フロンターレは河原創が劇的ミドル弾！', this)">📌 後で</div>
-      </div></section><section id="ai-tech"><h2 class="head">🤖 AI・技術</h2>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss" class="link-main" target="_blank">
-          <div class="t">メタプラネット、ビットコイン保有量4万枚を突破／Google、量子技術による暗号解読の容易性を指摘</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/85dce0fdb9eb95848f98e6f0d5031d73faea804c?source=rss','【J1結果速報】2度のリードを守り切れず…浦和レッズ、逆転負けで痛恨の4連敗…川崎フロンターレは河原創が劇的ミドル弾！',this)">📌</div>
+      </div></section><section class="card" id="ai-tech"><h2 class="head">🤖 AI</h2><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss" class="l-m" target="_blank">
+          <div class="t">メタプラネット、ビットコイン保有量4万枚を突破／Google、量子技術による暗号解読の容易性を指摘 <span class="tm">(18:01)</span></div>
           <div class="s">BTC保有4万枚突破</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss', 'メタプラネット、ビットコイン保有量4万枚を突破／Google、量子技術による暗号解読の容易性を指摘', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/8b5107b1483d7cf37a4cdd7b8e52b947bba97dbb?source=rss" class="link-main" target="_blank">
-          <div class="t">「Claude」で「OpenClaw」などの利用がサブスク対象外に API利用や追加使用量購入が必要</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss','メタプラネット、ビットコイン保有量4万枚を突破／Google、量子技術による暗号解読の容易性を指摘',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/8b5107b1483d7cf37a4cdd7b8e52b947bba97dbb?source=rss" class="l-m" target="_blank">
+          <div class="t">「Claude」で「OpenClaw」などの利用がサブスク対象外に API利用や追加使用量購入が必要 <span class="tm">(17:11)</span></div>
           <div class="s">Claudeのサブスク体系が変更</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/8b5107b1483d7cf37a4cdd7b8e52b947bba97dbb?source=rss', '「Claude」で「OpenClaw」などの利用がサブスク対象外に API利用や追加使用量購入が必要', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/4aba6edfaf78bebdbaa6a23719f319fe733dfc79?source=rss" class="link-main" target="_blank">
-          <div class="t">OpenAIの“AGI担当CEO”シモ氏が療養休職 ライトキャップCOOが“特別プロジェクト”担当に</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8b5107b1483d7cf37a4cdd7b8e52b947bba97dbb?source=rss','「Claude」で「OpenClaw」などの利用がサブスク対象外に API利用や追加使用量購入が必要',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/4aba6edfaf78bebdbaa6a23719f319fe733dfc79?source=rss" class="l-m" target="_blank">
+          <div class="t">OpenAIの“AGI担当CEO”シモ氏が療養休職 ライトキャップCOOが“特別プロジェクト”担当に <span class="tm">(17:11)</span></div>
           <div class="s">OpenAIのAGI担当が休職</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/4aba6edfaf78bebdbaa6a23719f319fe733dfc79?source=rss', 'OpenAIの“AGI担当CEO”シモ氏が療養休職 ライトキャップCOOが“特別プロジェクト”担当に', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a?source=rss" class="link-main" target="_blank">
-          <div class="t">ザッカーバーグはAIに会社を任せるのか Metaが仕掛ける「AIエージェント経営」</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/4aba6edfaf78bebdbaa6a23719f319fe733dfc79?source=rss','OpenAIの“AGI担当CEO”シモ氏が療養休職 ライトキャップCOOが“特別プロジェクト”担当に',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a?source=rss" class="l-m" target="_blank">
+          <div class="t">ザッカーバーグはAIに会社を任せるのか Metaが仕掛ける「AIエージェント経営」 <span class="tm">(17:11)</span></div>
           <div class="s">MetaがAIエージェント経営へ</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a?source=rss', 'ザッカーバーグはAIに会社を任せるのか Metaが仕掛ける「AIエージェント経営」', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/7de1366b48a17f2df00a603e804b3fdedb401969?source=rss" class="link-main" target="_blank">
-          <div class="t">発売待ち遠しいiPhone 18、Plus復活ある？Air 2どうなる？ そして注目の「折りたたみ式iPhone」発売いつか</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a?source=rss','ザッカーバーグはAIに会社を任せるのか Metaが仕掛ける「AIエージェント経営」',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/7de1366b48a17f2df00a603e804b3fdedb401969?source=rss" class="l-m" target="_blank">
+          <div class="t">発売待ち遠しいiPhone 18、Plus復活ある？Air 2どうなる？ そして注目の「折りたたみ式iPhone」発売いつか <span class="tm">(17:11)</span></div>
           <div class="s">新型iPhoneの発売時期予測</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/7de1366b48a17f2df00a603e804b3fdedb401969?source=rss', '発売待ち遠しいiPhone 18、Plus復活ある？Air 2どうなる？ そして注目の「折りたたみ式iPhone」発売いつか', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/f5cf04d57cfa098c04b6a3eaa8f6d65b8ddd8e1b?source=rss" class="link-main" target="_blank">
-          <div class="t">ゲーマーはこういうの好き！ 左手デバイスと完全合体したCORSAIRの超・多機能キーボードがヤバい</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/7de1366b48a17f2df00a603e804b3fdedb401969?source=rss','発売待ち遠しいiPhone 18、Plus復活ある？Air 2どうなる？ そして注目の「折りたたみ式iPhone」発売いつか',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/f5cf04d57cfa098c04b6a3eaa8f6d65b8ddd8e1b?source=rss" class="l-m" target="_blank">
+          <div class="t">ゲーマーはこういうの好き！ 左手デバイスと完全合体したCORSAIRの超・多機能キーボードがヤバい <span class="tm">(17:11)</span></div>
           <div class="s">ゲーマー向け多機能デバイス</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/f5cf04d57cfa098c04b6a3eaa8f6d65b8ddd8e1b?source=rss', 'ゲーマーはこういうの好き！ 左手デバイスと完全合体したCORSAIRの超・多機能キーボードがヤバい', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss" class="link-main" target="_blank">
-          <div class="t">【速報】メタプラネット、ビットコイン保有量4万枚を突破──世界3位に／Google、量子技術によるビットコイン暗号解読は「想定よりも容易」と指摘【日曜日に読みたい厳選10本】</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f5cf04d57cfa098c04b6a3eaa8f6d65b8ddd8e1b?source=rss','ゲーマーはこういうの好き！ 左手デバイスと完全合体したCORSAIRの超・多機能キーボードがヤバい',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss" class="l-m" target="_blank">
+          <div class="t">【速報】メタプラネット、ビットコイン保有量4万枚を突破──世界3位に／Google、量子技術によるビットコイン暗号解読は「想定よりも容易」と指摘【日曜日に読みたい厳選10本】 <span class="tm">(16:54)</span></div>
           <div class="s">メタプラビットコイン購入</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss', '【速報】メタプラネット、ビットコイン保有量4万枚を突破──世界3位に／Google、量子技術によるビットコイン暗号解読は「想定よりも容易」と指摘【日曜日に読みたい厳選10本】', this)">📌 後で</div>
-      </div>
-      <div class="item">
-        <a href="https://news.yahoo.co.jp/articles/1ee3f94f3ebb61919d9c73ee9af67d4ad12b327b?source=rss" class="link-main" target="_blank">
-          <div class="t">「AIが人間を使う」時代が訪れる、AIエージェントの驚くべき新トレンド</div>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss','【速報】メタプラネット、ビットコイン保有量4万枚を突破──世界3位に／Google、量子技術によるビットコイン暗号解読は「想定よりも容易」と指摘【日曜日に読みたい厳選10本】',this)">📌</div>
+      </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/1ee3f94f3ebb61919d9c73ee9af67d4ad12b327b?source=rss" class="l-m" target="_blank">
+          <div class="t">「AIが人間を使う」時代が訪れる、AIエージェントの驚くべき新トレンド <span class="tm">(16:22)</span></div>
           <div class="s">AIが人間を使う新時代の予兆</div>
         </a>
-        <div class="btn-pin" onclick="savePin('https://news.yahoo.co.jp/articles/1ee3f94f3ebb61919d9c73ee9af67d4ad12b327b?source=rss', '「AIが人間を使う」時代が訪れる、AIエージェントの驚くべき新トレンド', this)">📌 後で</div>
-      </div><details class="archive"><summary>＋ 過去のニュース (9件)</summary>
-      <a href="https://news.yahoo.co.jp/articles/3f77e48dcbbd7edc840dfc87a4c6c9db07609f6f?source=rss" class="item-old" target="_blank">テック業界に広がる「AIによる人員の削減」。オラクルでも大規模レイオフ</a><a href="https://news.yahoo.co.jp/articles/8b5107b1483d7cf37a4cdd7b8e52b947bba97dbb?source=rss" class="item-old" target="_blank">「Claude」で「OpenClaw」などの利用がサブスク対象外に　API利用や追加使用量購入が必要</a><a href="https://news.yahoo.co.jp/articles/642ab2b7ab9666b484364c6e0aa6d6738300b927?source=rss" class="item-old" target="_blank">【速報】メタプラネット、ビットコイン保有量4万枚を突破──世界3位に／Google、量子技術によるビットコイン暗号解読は「想定よりも容易」と指摘</a><a href="https://news.yahoo.co.jp/articles/9ce4bf432888113278a93238f37e179c1d471000?source=rss" class="item-old" target="_blank">東大とNECを「AI分野での産学協創協定締結」に突き動かしたものとは</a><a href="https://news.yahoo.co.jp/articles/4aba6edfaf78bebdbaa6a23719f319fe733dfc79?source=rss" class="item-old" target="_blank">OpenAIの“AGI担当CEO”シモ氏が療養休職　ライトキャップCOOが“特別プロジェクト”担当に</a><a href="https://news.yahoo.co.jp/articles/3828f99fdd9807682a1c673a4cab0f535ebcc76a?source=rss" class="item-old" target="_blank">ザッカーバーグはAIに会社を任せるのか　Metaが仕掛ける「AIエージェント経営」</a><a href="https://news.yahoo.co.jp/articles/d342ff68a7a34cbc3eecc66b6b73acc2cec15ac3?source=rss" class="item-old" target="_blank">AI量産アプリがあふれるApp Store、審査遅延で苦しむ真面目な開発者たち</a><a href="https://news.yahoo.co.jp/articles/7de1366b48a17f2df00a603e804b3fdedb401969?source=rss" class="item-old" target="_blank">発売待ち遠しいiPhone 18、Plus復活ある？Air 2どうなる？　そして注目の「折りたたみ式iPhone」発売いつか</a><a href="https://news.yahoo.co.jp/articles/a3020eedbe54eea4f433ccb15055f25036b15007?source=rss" class="item-old" target="_blank">Claude Codeソースコード流出から判明した次世代AIエージェントの驚くべき全貌</a></details></section></main></body></html>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/1ee3f94f3ebb61919d9c73ee9af67d4ad12b327b?source=rss','「AIが人間を使う」時代が訪れる、AIエージェントの驚くべき新トレンド',this)">📌</div>
+      </div></section></div></body></html>
