@@ -12,11 +12,11 @@
     .item { display: flex; border-bottom: 1px solid #1a1a1a; }
     .l-m { flex: 1; text-decoration: none; padding: 12px 5px 12px 0; }
     
-    /* Watch・PC共通の視認性チューン */
-    .t { font-size: 1.35rem; font-weight: 900; color: #33b5e5; line-height: 1.3; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    /* Watch・PC共通チューン：見出しの不自然な切れを防ぐ */
+    .t { font-size: 1.35rem; font-weight: 900; color: #33b5e5; line-height: 1.35; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .tm { font-size: 0.85rem; color: #777; font-weight: 600; white-space: nowrap; margin-left: 4px; }
-    /* ★要約は純白(#ffffff)にして対比を強くする */
-    .s { font-size: 0.95rem; color: #ffffff; font-weight: 700; line-height: 1.4; }
+    /* 要約：白文字で対比、文字間隔を調整して読みやすく */
+    .s { font-size: 0.95rem; color: #ffffff; font-weight: 700; line-height: 1.45; letter-spacing: 0.5px; }
     
     @media (min-width: 900px) { .t { font-size: 1.05rem; } .tm { font-size: 0.75rem; } .s { font-size: 0.85rem; } }
     
@@ -31,22 +31,22 @@
     function unpin(u,d){ document.getElementById(d).style.display='none'; fetch(W+"?action=unpin&url="+encodeURIComponent(u),{mode:'no-cors'}); }
   </script>
   </head><body>
-  <div style="text-align:right;font-size:11px;color:#555;margin-bottom:8px;font-weight:bold;">最終更新: 04/07 01:24</div>
+  <div style="text-align:right;font-size:11px;color:#555;margin-bottom:8px;font-weight:bold;">最終更新: 04/07 01:50</div>
   <div class="grid"><section class="card" id="major"><h2 class="head">🌍 主要ニュース</h2><div class="item">
         <a href="https://news.yahoo.co.jp/articles/f48e43e1c1a002acc396fe35c815dba9eda71de1?source=rss" class="l-m" target="_blank">
-          <div class="t">米軍機撃墜で100人の特殊部隊投入 <span class="tm">(3分前)</span></div>
+          <div class="t">米軍機撃墜で100人の特殊部隊投入 <span class="tm">(29分前)</span></div>
           <div class="s">薄氷の救出作戦</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f48e43e1c1a002acc396fe35c815dba9eda71de1?source=rss','米軍機撃墜で100人の特殊部隊投入',this)">📌</div>
       </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/7d90fdbf948d0b0a077e87be224604131de5d530?source=rss" class="l-m" target="_blank">
-          <div class="t">AI「Manus」LINEで操作可能に <span class="tm">(30分前)</span></div>
+          <div class="t">AI「Manus」LINEで操作可能に <span class="tm">(56分前)</span></div>
           <div class="s">タスク依頼を簡単に</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/7d90fdbf948d0b0a077e87be224604131de5d530?source=rss','AI「Manus」LINEで操作可能に',this)">📌</div>
       </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/58e393ab92fde7fa3b5de391bd83d62399fb9d2a?source=rss" class="l-m" target="_blank">
-          <div class="t">トランプ氏、8日を最終期限に設定 <span class="tm">(42分前)</span></div>
+          <div class="t">トランプ氏、8日を最終期限に設定 <span class="tm">(1時間前)</span></div>
           <div class="s">日本時間8日が期限</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/58e393ab92fde7fa3b5de391bd83d62399fb9d2a?source=rss','トランプ氏、8日を最終期限に設定',this)">📌</div>
@@ -69,17 +69,17 @@
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/51c64238c160f85275d106b632c65e5206b779a8?source=rss','給付付き税額控除「簡易型」導入へ',this)">📌</div>
       </div><div class="item">
+        <a href="https://news.yahoo.co.jp/articles/2a0f0fd2222669e6bd696001bd0414ffffd5698e?source=rss" class="l-m" target="_blank">
+          <div class="t">茂木外相がイラン外相と電話会談し安全要求 <span class="tm">(1時間前)</span></div>
+          <div class="s">交戦開始後3回目となる直接協議を実施</div>
+        </a>
+        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/2a0f0fd2222669e6bd696001bd0414ffffd5698e?source=rss','茂木外相がイラン外相と電話会談し安全要求',this)">📌</div>
+      </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/ba7ad3ec09ecf3d04bd38680b194ad13c655945b?source=rss" class="l-m" target="_blank">
           <div class="t">イラン、米国との停戦案を拒否 <span class="tm">(1時間前)</span></div>
           <div class="s">米との交渉決裂</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/ba7ad3ec09ecf3d04bd38680b194ad13c655945b?source=rss','イラン、米国との停戦案を拒否',this)">📌</div>
-      </div><div class="item">
-        <a href="https://news.yahoo.co.jp/articles/c069cc99f72cc34d38e110f62ccceb2a3de272c5?source=rss" class="l-m" target="_blank">
-          <div class="t">トランプ氏、ウクライナ停戦案を拒否 <span class="tm">(2時間前)</span></div>
-          <div class="s">承認せず和平は不透明</div>
-        </a>
-        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c069cc99f72cc34d38e110f62ccceb2a3de272c5?source=rss','トランプ氏、ウクライナ停戦案を拒否',this)">📌</div>
       </div></section><section class="card" id="stars"><h2 class="head">🌟 推しグループ</h2><div class="item">
         <a href="https://news.yahoo.co.jp/articles/652a8643857bf3cbe64d048e13c4bf764b2d8b1e?source=rss" class="l-m" target="_blank">
           <div class="t">iznaがTGC初出演の裏側告白 <span class="tm">(6時間前)</span></div>
@@ -100,7 +100,7 @@
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/566bcb60a1082de3cda0cd882347158526547b9a?source=rss','江川卓さん、絶好調ヤクルトは「打線つながって若手が活躍している」も「巨人、阪神と当たっていない」「２カ月たつと疲労がくる」',this)">📌</div>
       </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/c1fd7b6bcd626193eb1177f03d64eddb9833c1af?source=rss" class="l-m" target="_blank">
-          <div class="t">巨人戦で丸山希が始球式 <span class="tm">(4時間前)</span></div>
+          <div class="t">巨人戦で丸山希が始球式 <span class="tm">(5時間前)</span></div>
           <div class="s">五輪銅メダリスト</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c1fd7b6bcd626193eb1177f03d64eddb9833c1af?source=rss','巨人戦で丸山希が始球式',this)">📌</div>
@@ -112,13 +112,13 @@
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/9ceaac480b38066edee7732a92dcd987f0389ddc?source=rss','巨人 大城が逆転の代打3ラン',this)">📌</div>
       </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/cb7cf40b89b1c08e03e8fd510becb3a21fa37f2e?source=rss" class="l-m" target="_blank">
-          <div class="t">巨人・井上温大、復活の要因を堀内氏が分析 <span class="tm">(7時間前)</span></div>
+          <div class="t">巨人・井上温大、復活の要因を堀内氏が分析 <span class="tm">(8時間前)</span></div>
           <div class="s">エース候補の覚醒</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/cb7cf40b89b1c08e03e8fd510becb3a21fa37f2e?source=rss','巨人・井上温大、復活の要因を堀内氏が分析',this)">📌</div>
       </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/6513af3f4edca1a3bc45fd0bd070eca48b54fa32?source=rss" class="l-m" target="_blank">
-          <div class="t">巨人・平山功太が支配下登録 <span class="tm">(8時間前)</span></div>
+          <div class="t">巨人・平山功太が支配下登録 <span class="tm">(9時間前)</span></div>
           <div class="s">元独立リーガー</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/6513af3f4edca1a3bc45fd0bd070eca48b54fa32?source=rss','巨人・平山功太が支配下登録',this)">📌</div>
@@ -154,13 +154,13 @@
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/4d9df001e67a583fb68b44a65c7bde6f62ddc1e5?source=rss','Claude定額利用に制限、OpenClaw抜け道は',this)">📌</div>
       </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/c7f2cfe07b7d8345683e8316ced05753377b1b5d?source=rss" class="l-m" target="_blank">
-          <div class="t">EUの子ども保護規制失効へ、Googleら危機感示す <span class="tm">(7時間前)</span></div>
+          <div class="t">EUの子ども保護規制失効へ、Googleら危機感示す <span class="tm">(8時間前)</span></div>
           <div class="s">規制への懸念</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c7f2cfe07b7d8345683e8316ced05753377b1b5d?source=rss','EUの子ども保護規制失効へ、Googleら危機感示す',this)">📌</div>
       </div><div class="item">
         <a href="https://news.yahoo.co.jp/articles/8896acfa3d7406e334ab62445c0012337787b06f?source=rss" class="l-m" target="_blank">
-          <div class="t">デスクトップやWebカメラの映像を直接「Google Vids」へ送れる公式Chrome拡張が公開 <span class="tm">(8時間前)</span></div>
+          <div class="t">デスクトップやWebカメラの映像を直接「Google Vids」へ送れる公式Chrome拡張が公開 <span class="tm">(9時間前)</span></div>
           
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8896acfa3d7406e334ab62445c0012337787b06f?source=rss','デスクトップやWebカメラの映像を直接「Google Vids」へ送れる公式Chrome拡張が公開',this)">📌</div>
