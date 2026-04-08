@@ -1,64 +1,50 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { background: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 10px; }
-    .grid { display: flex; flex-direction: column; gap: 15px; }
-    @media (min-width: 900px) { 
-      body { padding: 20px; }
-      .grid { display: grid; grid-template-columns: repeat(5, 1fr); align-items: start; } 
-      .pin-box { grid-column: span 5; } 
-    }
-    .card { background: #0c0c0c; padding: 15px; border-radius: 12px; border: 1px solid #222; display: flex; flex-direction: column; max-height: 85vh; }
-    .head { font-size: 1.1rem; font-weight: 900; margin: 0 0 12px 0; border-bottom: 2px solid #333; padding-bottom: 8px; flex-shrink: 0; }
+    /* モバイル・Watchファースト設計：背景と一体化させ、クラウンでスルスル回せるように */
+    body { background: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 5px; }
+    .grid { display: flex; flex-direction: column; gap: 20px; }
+    .card { background: transparent; border: none; padding: 0; }
+    .head { font-size: 1.1rem; font-weight: 900; margin: 0 0 10px 0; border-bottom: 2px solid #333; padding-bottom: 5px; color: #fff; }
     
-    .scroll-box { overflow-y: auto; flex-grow: 1; padding-right: 5px; }
-    .scroll-box::-webkit-scrollbar { width: 4px; }
-    .scroll-box::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+    /* スクロールは画面全体のネイティブスクロールに任せる */
+    .scroll-box { overflow: visible; }
     
-    .empty-state { color: #666; font-size: 0.9rem; text-align: center; padding: 30px 0; font-weight: bold; }
-    
-    .item { display: flex; border-bottom: 1px solid #1a1a1a; }
-    .l-m { flex: 1; text-decoration: none; padding: 12px 5px 12px 0; }
-    
-    /* 見出し：2行構成、青文字太字 */
-    .t { font-size: 1.05rem; font-weight: 900; color: #33b5e5; line-height: 1.4; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .tm { font-size: 0.75rem; color: #777; font-weight: 600; white-space: nowrap; margin-left: 4px; }
-    
-    /* 一行要約：白文字 */
-    .s { font-size: 0.9rem; color: #ffffff; font-weight: 500; line-height: 1.3; }
-    
+    .empty { color: #666; font-size: 0.9rem; text-align: center; padding: 20px 0; font-weight: bold; }
+    .item { display: flex; border-bottom: 1px solid #1a1a1a; padding: 8px 0; }
+    .l-m { flex: 1; text-decoration: none; padding-right: 5px; }
+    .t { font-size: 1.05rem; font-weight: 900; color: #33b5e5; line-height: 1.4; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .tm { font-size: 0.75rem; color: #777; margin-left: 4px; white-space: nowrap; }
+    .s { font-size: 0.9rem; color: #fff; font-weight: 500; line-height: 1.3; }
     .b-p { display: flex; align-items: center; justify-content: center; color: #ffcc00; width: 44px; cursor: pointer; border-left: 1px solid #222; font-size: 1.2rem; user-select: none; }
-    .pin-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #332b00; }
-    .p-l { color: #fff; text-decoration: none; font-size: 15px; font-weight: bold; flex-grow: 1; }
-    .p-d { color: #ff3b30; font-weight: 900; cursor: pointer; padding: 5px 10px; font-size: 14px; background: #222; border-radius: 6px; }
-    
-    /* もっと見るボタン */
     .more-btn { text-align: center; padding: 12px; color: #33b5e5; font-size: 0.9rem; font-weight: bold; cursor: pointer; background: #1a1a1a; border-radius: 8px; margin-top: 10px; user-select: none; }
-    .more-btn:active { background: #333; }
+    
+    /* PC表示用：画面幅が900px以上の場合は、今まで通りの5列カード型＆内部スクロール */
+    @media (min-width: 900px) { 
+      body { padding: 20px; } 
+      .grid { display: grid; grid-template-columns: repeat(5, 1fr); align-items: start; gap: 15px; } 
+      .card { background: #0c0c0c; padding: 15px; border-radius: 12px; border: 1px solid #222; display: flex; flex-direction: column; max-height: 85vh; }
+      .head { margin: 0 0 12px 0; }
+      .scroll-box { overflow-y: auto; flex-grow: 1; padding-right: 5px; }
+      .scroll-box::-webkit-scrollbar { width: 4px; }
+      .scroll-box::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+    }
   </style>
   <script>
     const W = "https://script.google.com/macros/s/AKfycbzzBma248sj2VobvggeD6wsZRMBLoyKlYlcCGKwHgfExleSGsC6H389ZNygtA2nux6Q/exec";
     function savePin(u,t,b){ if(b.innerText==="✔")return; b.innerText="✔"; b.style.color="#555"; fetch(W+"?action=pin&url="+encodeURIComponent(u)+"&title="+encodeURIComponent(t),{mode:'no-cors'}); }
-    function unpin(u,d){ document.getElementById(d).style.display='none'; fetch(W+"?action=unpin&url="+encodeURIComponent(u),{mode:'no-cors'}); }
-    
-    /* もっと見るを展開する関数 */
-    function showMore(id) {
-      document.getElementById('more-' + id).style.display = 'block';
-      document.getElementById('btn-' + id).style.display = 'none';
-    }
-  </script>
-  </head><body>
-  <div style="text-align:right;font-size:11px;color:#555;margin-bottom:8px;font-weight:bold;">最終更新: 04/08 18:39</div>
-  <div class="grid"><section class="card" id="major">
-      <h2 class="head">🌍 主要ニュース</h2>
+    function showMore(id){ document.getElementById('more-'+id).style.display='block'; document.getElementById('btn-'+id).style.display='none'; }
+  </script></head><body>
+  <div style="text-align:right;font-size:11px;color:#555;margin-bottom:8px;font-weight:bold;">最終更新: 04/08 19:05</div>
+  <div class="grid"><section class="card" id="major"><h2 class="head">🌍 主要ニュース</h2>
       <div class="scroll-box"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/522fa765d90ba96e165e8ff87788476e567daa6c?source=rss" class="l-m" target="_blank">
-        <div class="t">高市首相がイランと会談 / ホルムズ航行の安全を要求 <span class="tm">(42分前)</span></div>
+        <div class="t">高市首相がイランと会談 / ホルムズ航行の安全を要求 <span class="tm">(1時間前)</span></div>
         <div class="s">石油価格の安定化を目指し原油供給への影響を注視。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/522fa765d90ba96e165e8ff87788476e567daa6c?source=rss','高市首相がイランと会談 / ホルムズ航行の安全を要求',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/e6c77c8db77b325671d692b3217fcc44aacdbb8a?source=rss" class="l-m" target="_blank">
-        <div class="t">週末は天候の急変に注意 / １０日は広い範囲で荒れ模様 <span class="tm">(53分前)</span></div>
+        <div class="t">週末は天候の急変に注意 / １０日は広い範囲で荒れ模様 <span class="tm">(1時間前)</span></div>
         <div class="s">低気圧の通過に伴い最高気温は２５度前後まで上昇。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/e6c77c8db77b325671d692b3217fcc44aacdbb8a?source=rss','週末は天候の急変に注意 / １０日は広い範囲で荒れ模様',this)">📌</div>
@@ -90,7 +76,8 @@
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/9c9a17e686fb7255d45eab220348c223726c0ad2?source=rss','石破前首相が韓国で会談
 アジア版ＮＡＴＯに言及',this)">📌</div>
-    </div><div class="item">
+    </div>
+      <div id="more-major" style="display:none;"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/09648d5b74e8df5e883f6c15384187ef7fe9fdf8?source=rss" class="l-m" target="_blank">
         <div class="t">ＧＷの天気は急変に注意
 気温上昇も雨風強まる恐れ <span class="tm">(2時間前)</span></div>
@@ -101,7 +88,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/a7a9a937fd0b85d3eede92bb2fb5515cddd012fa?source=rss" class="l-m" target="_blank">
         <div class="t">ブレイキン人気が爆発
-１５歳以下は４１％増 <span class="tm">(2時間前)</span></div>
+１５歳以下は４１％増 <span class="tm">(3時間前)</span></div>
         <div class="s">湯浅亜実の五輪金メダル効果</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a7a9a937fd0b85d3eede92bb2fb5515cddd012fa?source=rss','ブレイキン人気が爆発
@@ -109,7 +96,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/8961e26358d0366d7568020b6f1e26bbe5346e98?source=rss" class="l-m" target="_blank">
         <div class="t">都心は土曜に２７度予想
-金曜夜の横殴りの雨警戒 <span class="tm">(2時間前)</span></div>
+金曜夜の横殴りの雨警戒 <span class="tm">(3時間前)</span></div>
         <div class="s">週末に２５度超えが続出</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8961e26358d0366d7568020b6f1e26bbe5346e98?source=rss','都心は土曜に２７度予想
@@ -138,11 +125,10 @@
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/b109711d4fcbb88540c7774bae74dc9526d06627?source=rss','ガンダムのハロ宇宙へ
 ＩＳＳへ打ち上げ準備',this)">📌</div>
-    </div>
-      <div id="more-major" style="display: none;"><div class="item">
+    </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/083cf9a2d2ea7c3f6c47b75fc3a51509c17ea767?source=rss" class="l-m" target="_blank">
         <div class="t">高市総理が予算成立を評価
-年度またぎの事態には遺憾 <span class="tm">(7時間前)</span></div>
+年度またぎの事態には遺憾 <span class="tm">(8時間前)</span></div>
         <div class="s">２６年度分。誠実な審議対応を強調した。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/083cf9a2d2ea7c3f6c47b75fc3a51509c17ea767?source=rss','高市総理が予算成立を評価
@@ -150,7 +136,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/dcbf9708ea78a530c1c2d97982c073292783971f?source=rss" class="l-m" target="_blank">
         <div class="t">川崎の４０ｍ足場が崩落
-作業員３人死亡し１人不明 <span class="tm">(7時間前)</span></div>
+作業員３人死亡し１人不明 <span class="tm">(8時間前)</span></div>
         <div class="s">海へ落下か。現場では大規模捜索続く。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/dcbf9708ea78a530c1c2d97982c073292783971f?source=rss','川崎の４０ｍ足場が崩落
@@ -166,7 +152,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/6e584f3a600f4b96dd93499e11c01fb415a0f3b2?source=rss" class="l-m" target="_blank">
         <div class="t">東海道線で人身事故発生
-全線で運転を見合わせ <span class="tm">(8時間前)</span></div>
+全線で運転を見合わせ <span class="tm">(9時間前)</span></div>
         <div class="s">川崎駅付近も影響。再開後の混雑に要注意。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/6e584f3a600f4b96dd93499e11c01fb415a0f3b2?source=rss','東海道線で人身事故発生
@@ -182,7 +168,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/0c9d71e1f195d709f4976724cf283c4e8402a7c1?source=rss" class="l-m" target="_blank">
         <div class="t">藤井聡太名人が4連覇挑戦
-将棋名人戦の第1局が開幕 <span class="tm">(9時間前)</span></div>
+将棋名人戦の第1局が開幕 <span class="tm">(10時間前)</span></div>
         <div class="s">糸谷八段を相手に2日間の熱戦が始まる</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/0c9d71e1f195d709f4976724cf283c4e8402a7c1?source=rss','藤井聡太名人が4連覇挑戦
@@ -190,7 +176,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/1173563bdc5d9631e5756d261e1e19d5c9d77efd?source=rss" class="l-m" target="_blank">
         <div class="t">広尾の買取店で窃盗被害
-高級品数百万円分が盗難か <span class="tm">(9時間前)</span></div>
+高級品数百万円分が盗難か <span class="tm">(10時間前)</span></div>
         <div class="s">複数の犯人が関与したと見て警視庁が捜査</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/1173563bdc5d9631e5756d261e1e19d5c9d77efd?source=rss','広尾の買取店で窃盗被害
@@ -240,26 +226,26 @@
 死者３名で不明者捜索',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/fd39814dccce0f951fb1d8986d2f23c946a8e388?source=rss" class="l-m" target="_blank">
-        <div class="t">熊被害は顔に集中　防御姿勢で命を守れ <span class="tm">(12時間前)</span></div>
+        <div class="t">熊被害は顔に集中　防御姿勢で命を守れ <span class="tm">(13時間前)</span></div>
         <div class="s">岩手県内の出没数は前年比5倍の異常事態。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/fd39814dccce0f951fb1d8986d2f23c946a8e388?source=rss','熊被害は顔に集中　防御姿勢で命を守れ',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/7f7e7bf13733c3e3f796cc28430b4913575b2bb9?source=rss" class="l-m" target="_blank">
-        <div class="t">5月より電気代高騰　補助金廃止で家計直撃 <span class="tm">(12時間前)</span></div>
+        <div class="t">5月より電気代高騰　補助金廃止で家計直撃 <span class="tm">(13時間前)</span></div>
         <div class="s">政府の支援終了により月1千円超の増額へ。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/7f7e7bf13733c3e3f796cc28430b4913575b2bb9?source=rss','5月より電気代高騰　補助金廃止で家計直撃',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/192a0d956dfdb70335844275b12843acf34f538c?source=rss" class="l-m" target="_blank">
-        <div class="t">旭化成ホームズが新技術 独社の手法で長寿命住宅へ <span class="tm">(13時間前)</span></div>
+        <div class="t">旭化成ホームズが新技術 独社の手法で長寿命住宅へ <span class="tm">(14時間前)</span></div>
         <div class="s">ヘーベル社と提携し開発中</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/192a0d956dfdb70335844275b12843acf34f538c?source=rss','旭化成ホームズが新技術 独社の手法で長寿命住宅へ',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/dc0865d48c0acd542e194aa39f119d636ffb7340?source=rss" class="l-m" target="_blank">
         <div class="t">今田美桜が新ＣＭに就任
-冷凍炒飯は発売２５周年 <span class="tm">(14時間前)</span></div>
+冷凍炒飯は発売２５周年 <span class="tm">(15時間前)</span></div>
         <div class="s">ギネス記録を持つ看板商品が販促を強化。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/dc0865d48c0acd542e194aa39f119d636ffb7340?source=rss','今田美桜が新ＣＭに就任
@@ -267,7 +253,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/c8e02d522253e0b269b9a9ea4e995fc24867d12d?source=rss" class="l-m" target="_blank">
         <div class="t">発達障害の不安を解消へ
-国際線利用のガイド作成 <span class="tm">(14時間前)</span></div>
+国際線利用のガイド作成 <span class="tm">(15時間前)</span></div>
         <div class="s">航空連盟が搭乗手順を可視化し負担を軽減。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c8e02d522253e0b269b9a9ea4e995fc24867d12d?source=rss','発達障害の不安を解消へ
@@ -275,7 +261,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/a88a6e664487fce1f9598743f82f1820508abb4a?source=rss" class="l-m" target="_blank">
         <div class="t">子どもの自殺を防止へ
-改正法が本日より施行 <span class="tm">(14時間前)</span></div>
+改正法が本日より施行 <span class="tm">(15時間前)</span></div>
         <div class="s">困難を抱える家庭の情報を自治体で共有。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a88a6e664487fce1f9598743f82f1820508abb4a?source=rss','子どもの自殺を防止へ
@@ -312,7 +298,7 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/35f6e6a56696fd088b0bece8eb7527112ee0740f?source=rss','地方で光熱費やゴミ処理費が値上げ 生活を圧迫',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/0ba8987e4949380c3b9f286284e2cf19dcb872e8?source=rss" class="l-m" target="_blank">
-        <div class="t">川崎の製鉄所で足場崩落 3人重体で1人不明 <span class="tm">(16時間前)</span></div>
+        <div class="t">川崎の製鉄所で足場崩落 3人重体で1人不明 <span class="tm">(17時間前)</span></div>
         <div class="s">撤去中の重り500トンが落下した疑い</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/0ba8987e4949380c3b9f286284e2cf19dcb872e8?source=rss','川崎の製鉄所で足場崩落 3人重体で1人不明',this)">📌</div>
@@ -324,19 +310,19 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/9699baec136b6a8cb1eaa539a806a6896d99deee?source=rss','米子市議を収賄容疑で逮捕 サル飼育数の質問で見返り',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/007d25742147f72f1e34f05d2988f3d8d79a0eaf?source=rss" class="l-m" target="_blank">
-        <div class="t">東海道新幹線の線路立ち入りで逮捕 <span class="tm">(17時間前)</span></div>
+        <div class="t">東海道新幹線の線路立ち入りで逮捕 <span class="tm">(18時間前)</span></div>
         <div class="s">ブラジル国籍の男による威力業務妨害</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/007d25742147f72f1e34f05d2988f3d8d79a0eaf?source=rss','東海道新幹線の線路立ち入りで逮捕',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/1061b45b572df934c9e001628dd68aa4c0054f1e?source=rss" class="l-m" target="_blank">
-        <div class="t">世田谷の砧公園で倒木し道路を塞ぐ <span class="tm">(17時間前)</span></div>
+        <div class="t">世田谷の砧公園で倒木し道路を塞ぐ <span class="tm">(18時間前)</span></div>
         <div class="s">今年4回目で大蔵通りが通行不能に</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/1061b45b572df934c9e001628dd68aa4c0054f1e?source=rss','世田谷の砧公園で倒木し道路を塞ぐ',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/91d25a38056b112fd26fca1a0c3e33953f4f6827?source=rss" class="l-m" target="_blank">
-        <div class="t">高市総理　UAEと首脳会談　原油の安定供給求める(テ… <span class="tm">(17時間前)</span></div>
+        <div class="t">高市総理　UAEと首脳会談　原油の安定供給求める(テ… <span class="tm">(18時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/91d25a38056b112fd26fca1a0c3e33953f4f6827?source=rss','高市総理　UAEと首脳会談　原油の安定供給求める(テ…',this)">📌</div>
@@ -348,31 +334,31 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/d0c5424926fee960f030333ec11a0dd543047f6d?source=rss','中部9県の企業倒産が2025年度は1687件の高水準…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/c965461dc2acd2bf24cecfbd9b8008383e5a2297?source=rss" class="l-m" target="_blank">
-        <div class="t">アプリ詐欺で300万円搾取 元ホストら男女2人を再逮捕 <span class="tm">(18時間前)</span></div>
+        <div class="t">アプリ詐欺で300万円搾取 元ホストら男女2人を再逮捕 <span class="tm">(19時間前)</span></div>
         <div class="s">借金返済の嘘を重ね59歳男性から現金を騙し取った</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c965461dc2acd2bf24cecfbd9b8008383e5a2297?source=rss','アプリ詐欺で300万円搾取 元ホストら男女2人を再逮捕',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/0a6342b15e4b994a2100a17c4de109be17749253?source=rss" class="l-m" target="_blank">
-        <div class="t">高市首相がUAE大統領と協議 中東情勢の沈静化へ連携 <span class="tm">(18時間前)</span></div>
+        <div class="t">高市首相がUAE大統領と協議 中東情勢の沈静化へ連携 <span class="tm">(19時間前)</span></div>
         <div class="s">米国やイランの首脳とも会談を模索し外交を加速する</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/0a6342b15e4b994a2100a17c4de109be17749253?source=rss','高市首相がUAE大統領と協議 中東情勢の沈静化へ連携',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/5ae6961b2171024210086ca5a1fb01c2cc53ea10?source=rss" class="l-m" target="_blank">
-        <div class="t">将棋・名人戦七番勝負　第1局の前夜祭　藤井六冠に糸谷… <span class="tm">(18時間前)</span></div>
+        <div class="t">将棋・名人戦七番勝負　第1局の前夜祭　藤井六冠に糸谷… <span class="tm">(19時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5ae6961b2171024210086ca5a1fb01c2cc53ea10?source=rss','将棋・名人戦七番勝負　第1局の前夜祭　藤井六冠に糸谷…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/574b879b6df93ba3e2a26300a4092b3e1438c6ed?source=rss" class="l-m" target="_blank">
-        <div class="t">川崎市の扇島で足場が崩落 解体作業中の男性2人が死亡 <span class="tm">(18時間前)</span></div>
+        <div class="t">川崎市の扇島で足場が崩落 解体作業中の男性2人が死亡 <span class="tm">(19時間前)</span></div>
         <div class="s">21日午後に重機周辺で事故が起き現場で犠牲になった</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/574b879b6df93ba3e2a26300a4092b3e1438c6ed?source=rss','川崎市の扇島で足場が崩落 解体作業中の男性2人が死亡',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/6189d37bc5e049f987075002a9d8e8fcddce6ee5?source=rss" class="l-m" target="_blank">
-        <div class="t">川崎のクレーン足場崩落事故 意識不明の作業員2人が死亡 <span class="tm">(18時間前)</span></div>
+        <div class="t">川崎のクレーン足場崩落事故 意識不明の作業員2人が死亡 <span class="tm">(19時間前)</span></div>
         <div class="s">工場地帯で発生した惨事を警察が当時の状況を含め調査</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/6189d37bc5e049f987075002a9d8e8fcddce6ee5?source=rss','川崎のクレーン足場崩落事故 意識不明の作業員2人が死亡',this)">📌</div>
@@ -396,7 +382,7 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/d750279c4f56e96134988fa612724fb74c0c1b6d?source=rss','首相、UAEに原油要請　ホルムズ海峡安定へ連携',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/2cc399aa7cf9046f1dc0ae09be7d67c49a3fb584?source=rss" class="l-m" target="_blank">
-        <div class="t">首相、UAEに原油の安定供給へ協力要請 <span class="tm">(19時間前)</span></div>
+        <div class="t">首相、UAEに原油の安定供給へ協力要請 <span class="tm">(20時間前)</span></div>
         <div class="s">中東情勢を受け資源確保と平和への貢献を図る。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/2cc399aa7cf9046f1dc0ae09be7d67c49a3fb584?source=rss','首相、UAEに原油の安定供給へ協力要請',this)">📌</div>
@@ -420,19 +406,19 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/38c7e3dc9cb9fd958c22302cf7a1044359555fcf?source=rss','茂木大臣、エジプト外相と沈静化に向け連携確認',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/168bd70764ffbe5d80d614f0081c9b9beac14291?source=rss" class="l-m" target="_blank">
-        <div class="t">9日にかけ西日本で大雨の恐れ 北日本は荒天警戒 <span class="tm">(20時間前)</span></div>
+        <div class="t">9日にかけ西日本で大雨の恐れ 北日本は荒天警戒 <span class="tm">(21時間前)</span></div>
         <div class="s">気象庁が今後の気圧配置と降水量を予測。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/168bd70764ffbe5d80d614f0081c9b9beac14291?source=rss','9日にかけ西日本で大雨の恐れ 北日本は荒天警戒',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/4f76c6a4ff47262a9b758cdf8f767da04c44d220?source=rss" class="l-m" target="_blank">
-        <div class="t">首相がSNS発信の重要性を強調 情報伝達の多様化指摘 <span class="tm">(20時間前)</span></div>
+        <div class="t">首相がSNS発信の重要性を強調 情報伝達の多様化指摘 <span class="tm">(21時間前)</span></div>
         <div class="s">投稿不足の懸念に対し岸田氏が見解を示す。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/4f76c6a4ff47262a9b758cdf8f767da04c44d220?source=rss','首相がSNS発信の重要性を強調 情報伝達の多様化指摘',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/ad55ffcb400562eecd080b472dcbe5f945493464?source=rss" class="l-m" target="_blank">
-        <div class="t">岸田首相がUAE大統領と電話会談 <span class="tm">(20時間前)</span></div>
+        <div class="t">岸田首相がUAE大統領と電話会談 <span class="tm">(21時間前)</span></div>
         <div class="s">中東諸国との経済協力や資源確保を議論。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/ad55ffcb400562eecd080b472dcbe5f945493464?source=rss','岸田首相がUAE大統領と電話会談',this)">📌</div>
@@ -480,31 +466,31 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3c2d1daf6d980599ec4026f3964373ce7fdbd856?source=rss','神奈川知事が安全確保を徹底 学校行事の事故受け',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/569f51f0b4fba079791f6aba8501c770ad442b8e?source=rss" class="l-m" target="_blank">
-        <div class="t">市営住宅で連続放火か　原付きバイクや掲示物などが焼け… <span class="tm">(21時間前)</span></div>
+        <div class="t">市営住宅で連続放火か　原付きバイクや掲示物などが焼け… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/569f51f0b4fba079791f6aba8501c770ad442b8e?source=rss','市営住宅で連続放火か　原付きバイクや掲示物などが焼け…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/08a6f1a7fd64a0fe919c9e68f582948f0b7ca047?source=rss" class="l-m" target="_blank">
-        <div class="t">「異質」な平和学習、同志社の第三者委は沖縄研修旅行の… <span class="tm">(21時間前)</span></div>
+        <div class="t">「異質」な平和学習、同志社の第三者委は沖縄研修旅行の… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/08a6f1a7fd64a0fe919c9e68f582948f0b7ca047?source=rss','「異質」な平和学習、同志社の第三者委は沖縄研修旅行の…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/7eb4a813834eb71073ce23bf6d2bc5e984cbe60e?source=rss" class="l-m" target="_blank">
-        <div class="t">「自民党内が揉めている」「まっとうな揉め方だと思う」… <span class="tm">(21時間前)</span></div>
+        <div class="t">「自民党内が揉めている」「まっとうな揉め方だと思う」… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/7eb4a813834eb71073ce23bf6d2bc5e984cbe60e?source=rss','「自民党内が揉めている」「まっとうな揉め方だと思う」…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/2dd2b654c7e4b49899ae48b981a5e9ec7746c2a0?source=rss" class="l-m" target="_blank">
-        <div class="t">高須克弥院長、人間ドック受診をやめたことを告白「人間… <span class="tm">(21時間前)</span></div>
+        <div class="t">高須克弥院長、人間ドック受診をやめたことを告白「人間… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/2dd2b654c7e4b49899ae48b981a5e9ec7746c2a0?source=rss','高須克弥院長、人間ドック受診をやめたことを告白「人間…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/0c3318868f254787565f264a1e44e37fbe74b51d?source=rss" class="l-m" target="_blank">
-        <div class="t">首相「情報伝達は多様化」　取材対応少なさ問われ <span class="tm">(21時間前)</span></div>
+        <div class="t">首相「情報伝達は多様化」　取材対応少なさ問われ <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/0c3318868f254787565f264a1e44e37fbe74b51d?source=rss','首相「情報伝達は多様化」　取材対応少なさ問われ',this)">📌</div>
@@ -628,41 +614,9 @@
         <div class="s">2025年度内成立は果たせず</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f9fd2b55b7ccb8a68ecbbd867b86b756c760c84f?source=rss','新年度予算が参議院本会議で可決・成立',this)">📌</div>
-    </div><div class="item">
-      <a href="https://news.yahoo.co.jp/articles/245101259b07196412090dcd5b918f39b83f0e5a?source=rss" class="l-m" target="_blank">
-        <div class="t">台湾最大野党の党首が訪中、総統は牽制 <span class="tm">(23時間前)</span></div>
-        <div class="s">独裁者の褒美で平和は得られぬ</div>
-      </a>
-      <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/245101259b07196412090dcd5b918f39b83f0e5a?source=rss','台湾最大野党の党首が訪中、総統は牽制',this)">📌</div>
-    </div><div class="item">
-      <a href="https://news.yahoo.co.jp/articles/312a59b5cbe5a8428ece55893f5669a16f7919b1?source=rss" class="l-m" target="_blank">
-        <div class="t">東洋大に是正勧告 残業代未払いで労基署 <span class="tm">(23時間前)</span></div>
-        <div class="s">労働環境の改善に向け、厳しい指導が入る。</div>
-      </a>
-      <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/312a59b5cbe5a8428ece55893f5669a16f7919b1?source=rss','東洋大に是正勧告 残業代未払いで労基署',this)">📌</div>
-    </div><div class="item">
-      <a href="https://news.yahoo.co.jp/articles/5d26d12e82a385af2a35f060f4fdc3d36ed25679?source=rss" class="l-m" target="_blank">
-        <div class="t">李大統領、石破氏と会談へ 協力強化を協議 <span class="tm">(23時間前)</span></div>
-        <div class="s">8日の昼食を交え、日韓の連携を深める。</div>
-      </a>
-      <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5d26d12e82a385af2a35f060f4fdc3d36ed25679?source=rss','李大統領、石破氏と会談へ 協力強化を協議',this)">📌</div>
-    </div><div class="item">
-      <a href="https://news.yahoo.co.jp/articles/bb9e0ff23dd8a511c7d2fd67f33bb314151b0f91?source=rss" class="l-m" target="_blank">
-        <div class="t">マクロン大統領が日本へ警鐘 従属による戦争危惧 <span class="tm">(23時間前)</span></div>
-        <div class="s">トランプ政権への過度な追従を警告した。</div>
-      </a>
-      <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/bb9e0ff23dd8a511c7d2fd67f33bb314151b0f91?source=rss','マクロン大統領が日本へ警鐘 従属による戦争危惧',this)">📌</div>
-    </div><div class="item">
-      <a href="https://news.yahoo.co.jp/articles/f14d786f35dcff5486ede52079cbe630d3be7bae?source=rss" class="l-m" target="_blank">
-        <div class="t">WHO、ガザの医療搬送を停止 職員死亡受け <span class="tm">(23時間前)</span></div>
-        <div class="s">現地の治安悪化により、当面の中止を決定。</div>
-      </a>
-      <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f14d786f35dcff5486ede52079cbe630d3be7bae?source=rss','WHO、ガザの医療搬送を停止 職員死亡受け',this)">📌</div>
     </div></div>
-      <div class="more-btn" id="btn-major" onclick="showMore('major')">＋ もっと見る (81)</div>
-    </div>
-    </section><section class="card" id="stars">
-      <h2 class="head">🌟 推しグループ</h2>
+      <div class="more-btn" id="btn-major" onclick="showMore('major')">＋ もっと見る (82)</div>
+      </div></section><section class="card" id="stars"><h2 class="head">🌟 推しグループ</h2>
       <div class="scroll-box"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/afe6e35878eb581d5e80e86e9e624270c4e200c1?source=rss" class="l-m" target="_blank">
         <div class="t">ＩＶＥが京セラドームへ
@@ -674,7 +628,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/a02e0c008c0849d3498abf29fce36b852201fa22?source=rss" class="l-m" target="_blank">
         <div class="t">藤井名人が春爛漫ランチ
-豪華スイーツに反響続々 <span class="tm">(2時間前)</span></div>
+豪華スイーツに反響続々 <span class="tm">(3時間前)</span></div>
         <div class="s">糸谷八段と対局中に注文</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a02e0c008c0849d3498abf29fce36b852201fa22?source=rss','藤井名人が春爛漫ランチ
@@ -682,7 +636,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/23e6c231460fb8cfc290104e69f08f1021e42cab?source=rss" class="l-m" target="_blank">
         <div class="t">ＩＶＥやＴＸＴが歌唱
-新ドラマ豪華な参加歌手 <span class="tm">(5時間前)</span></div>
+新ドラマ豪華な参加歌手 <span class="tm">(6時間前)</span></div>
         <div class="s">楽曲制作陣リストを公開</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/23e6c231460fb8cfc290104e69f08f1021e42cab?source=rss','ＩＶＥやＴＸＴが歌唱
@@ -711,10 +665,11 @@
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/b01b96c9d567205e41da49fbeb07323b540770f8?source=rss','清水美依紗が新曲を発表
 実写ドラマ主題歌に抜擢',this)">📌</div>
-    </div><div class="item">
+    </div>
+      <div id="more-stars" style="display:none;"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/8951b5e7d9f26e9edbbc5519a776ae704986524b?source=rss" class="l-m" target="_blank">
         <div class="t">期待のILLITが新譜
-公開までの予定表を発表 <span class="tm">(8時間前)</span></div>
+公開までの予定表を発表 <span class="tm">(9時間前)</span></div>
         <div class="s">アルバム発売に向け。韓国紙も大きく報道。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8951b5e7d9f26e9edbbc5519a776ae704986524b?source=rss','期待のILLITが新譜
@@ -725,27 +680,24 @@
         <div class="s">宮脇咲良が下積み時代の苦悩を赤裸々に吐露。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/e3408f2aa5cef82d8616b1108c01a7e23afee1d3?source=rss','LE SSERAFIMサクラが過去告白 3度目デビュー秘話',this)">📌</div>
-    </div>
-      <div id="more-stars" style="display: none;"><div class="item">
+    </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/578d7598bd18dd0b2938103d398f3dd3acd16625?source=rss" class="l-m" target="_blank">
         <div class="t">4月のU-NEXT注目作品が解禁 <span class="tm">(22時間前)</span></div>
         <div class="s">ピュー主演の独占映画など続々登場</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/578d7598bd18dd0b2938103d398f3dd3acd16625?source=rss','4月のU-NEXT注目作品が解禁',this)">📌</div>
     </div></div>
-      <div class="more-btn" id="btn-stars" onclick="showMore('stars')">＋ もっと見る (1)</div>
-    </div>
-    </section><section class="card" id="sports">
-      <h2 class="head">⚾ 巨人・スポーツ</h2>
+      <div class="more-btn" id="btn-stars" onclick="showMore('stars')">＋ もっと見る (3)</div>
+      </div></section><section class="card" id="sports"><h2 class="head">⚾ 巨人・スポーツ</h2>
       <div class="scroll-box"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/ce80a6aa993cd029cb96fd90eff51f45646f638c?source=rss" class="l-m" target="_blank">
-        <div class="t">横川凱が左肘を手術へ / 阿部巨人の左腕がリハビリ <span class="tm">(54分前)</span></div>
+        <div class="t">横川凱が左肘を手術へ / 阿部巨人の左腕がリハビリ <span class="tm">(1時間前)</span></div>
         <div class="s">昨季自己最多の２５試合に登板し２勝を挙げた。 </div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/ce80a6aa993cd029cb96fd90eff51f45646f638c?source=rss','横川凱が左肘を手術へ / 阿部巨人の左腕がリハビリ',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/acd843149226d3edd4f3fa159e14fcf0a32b0983?source=rss" class="l-m" target="_blank">
-        <div class="t">平山功太が初のスタメン / 阿部巨人の新星が１番抜擢 <span class="tm">(55分前)</span></div>
+        <div class="t">平山功太が初のスタメン / 阿部巨人の新星が１番抜擢 <span class="tm">(1時間前)</span></div>
         <div class="s">イースタンで打率３割超えを記録した若武者の挑戦。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/acd843149226d3edd4f3fa159e14fcf0a32b0983?source=rss','平山功太が初のスタメン / 阿部巨人の新星が１番抜擢',this)">📌</div>
@@ -772,12 +724,13 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/afc40938a9cc447b777101f89c582069de7c7b34?source=rss" class="l-m" target="_blank">
         <div class="t">阿部巨人に期待の新戦力
-平山功太が初の１軍昇格 <span class="tm">(2時間前)</span></div>
+平山功太が初の１軍昇格 <span class="tm">(3時間前)</span></div>
         <div class="s">支配下登録からわずか３日で大抜擢された。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/afc40938a9cc447b777101f89c582069de7c7b34?source=rss','阿部巨人に期待の新戦力
 平山功太が初の１軍昇格',this)">📌</div>
-    </div><div class="item">
+    </div>
+      <div id="more-sports" style="display:none;"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/5d5913a89bb3f9e9ed73b4e68ff9440a13708413?source=rss" class="l-m" target="_blank">
         <div class="t">阿部巨人とバンダイ提携
 観戦者全員にカード配布 <span class="tm">(5時間前)</span></div>
@@ -788,25 +741,24 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/4293eadbc0c9c3f4404cd1283345a812c7bcc7e3?source=rss" class="l-m" target="_blank">
         <div class="t">阿部巨人の捕手陣を分析
-三者三様の個性が鍵に <span class="tm">(8時間前)</span></div>
+三者三様の個性が鍵に <span class="tm">(9時間前)</span></div>
         <div class="s">天谷氏が注目。若手とベテランの融合図る。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/4293eadbc0c9c3f4404cd1283345a812c7bcc7e3?source=rss','阿部巨人の捕手陣を分析
 三者三様の個性が鍵に',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/8fc58aecda6379f7bf3c55ce2e78045db9aa661d?source=rss" class="l-m" target="_blank">
-        <div class="t">阿部巨人がミスに嘆き　守備の乱れで首位に敗戦 <span class="tm">(12時間前)</span></div>
+        <div class="t">阿部巨人がミスに嘆き　守備の乱れで首位に敗戦 <span class="tm">(13時間前)</span></div>
         <div class="s">主砲の岡本和真ら野手陣の失策が響く。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8fc58aecda6379f7bf3c55ce2e78045db9aa661d?source=rss','阿部巨人がミスに嘆き　守備の乱れで首位に敗戦',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/79059630337cae518f7174f8e3639f194b319f04?source=rss" class="l-m" target="_blank">
-        <div class="t">ウィットリー5失点　被弾続き来日2敗目 <span class="tm">(12時間前)</span></div>
+        <div class="t">ウィットリー5失点　被弾続き来日2敗目 <span class="tm">(13時間前)</span></div>
         <div class="s">全得点を柵越えで奪われ勝機を逸した。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/79059630337cae518f7174f8e3639f194b319f04?source=rss','ウィットリー5失点　被弾続き来日2敗目',this)">📌</div>
-    </div>
-      <div id="more-sports" style="display: none;"><div class="item">
+    </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/06808ad3d1c96cdf9fb1bf028f041e6fd4d468fd?source=rss" class="l-m" target="_blank">
         <div class="t">阿部巨人投手の再編を加速
 ルシアーノ先発転向プラン <span class="tm">(13時間前)</span></div>
@@ -816,13 +768,13 @@
 ルシアーノ先発転向プラン',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/8d28741370d1c27f9ce12950b432fa59dca62baa?source=rss" class="l-m" target="_blank">
-        <div class="t">阿部巨人がマツダで黒星 ミス続出で今季初戦を落とす <span class="tm">(13時間前)</span></div>
+        <div class="t">阿部巨人がマツダで黒星 ミス続出で今季初戦を落とす <span class="tm">(14時間前)</span></div>
         <div class="s">広島に敗れ鬼門攻略ならず</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8d28741370d1c27f9ce12950b432fa59dca62baa?source=rss','阿部巨人がマツダで黒星 ミス続出で今季初戦を落とす',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/8c036b25dfd71c7c187d2136548366823ab270bb?source=rss" class="l-m" target="_blank">
-        <div class="t">【巨人】ウィットリー２ラン２発被弾で６回５失点「自分… <span class="tm">(19時間前)</span></div>
+        <div class="t">【巨人】ウィットリー２ラン２発被弾で６回５失点「自分… <span class="tm">(20時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8c036b25dfd71c7c187d2136548366823ab270bb?source=rss','【巨人】ウィットリー２ラン２発被弾で６回５失点「自分…',this)">📌</div>
@@ -852,31 +804,31 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5a0b3d453c8a4b29fe4f2441c8ad82deb95559bb?source=rss','巨人のウィットリー、無駄な四球と精度を反省',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/3d424a1f11b96ebfb7d1de77fcf9e3ed1e42db8b?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人阿部監督 守備失策の増田陸に「突風吹いたか」 <span class="tm">(20時間前)</span></div>
+        <div class="t">巨人阿部監督 守備失策の増田陸に「突風吹いたか」 <span class="tm">(21時間前)</span></div>
         <div class="s">指揮官が若手内野手の不手際を皮肉で叱責。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3d424a1f11b96ebfb7d1de77fcf9e3ed1e42db8b?source=rss','巨人阿部監督 守備失策の増田陸に「突風吹いたか」',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/a233965737838d26589809dab49ccd6f306185e8?source=rss" class="l-m" target="_blank">
-        <div class="t">宮本慎也氏が巨人ウィットリーを分析 制球力が鍵 <span class="tm">(20時間前)</span></div>
+        <div class="t">宮本慎也氏が巨人ウィットリーを分析 制球力が鍵 <span class="tm">(21時間前)</span></div>
         <div class="s">助っ人右腕のエース昇格へ向けた課題。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a233965737838d26589809dab49ccd6f306185e8?source=rss','宮本慎也氏が巨人ウィットリーを分析 制球力が鍵',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/7fb6f311fba958ba0e7a2b64741e1c204062cc13?source=rss" class="l-m" target="_blank">
-        <div class="t">来日初黒星の巨人ウィットリー 内海コーチが四球指摘 <span class="tm">(20時間前)</span></div>
+        <div class="t">来日初黒星の巨人ウィットリー 内海コーチが四球指摘 <span class="tm">(21時間前)</span></div>
         <div class="s">1失点の右腕に対し無駄な歩かせを反省。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/7fb6f311fba958ba0e7a2b64741e1c204062cc13?source=rss','来日初黒星の巨人ウィットリー 内海コーチが四球指摘',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/f97905d338a16742f75ab4b43de8b1e43d3d31d1?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人マツダの呪い続く 守備の乱れと被弾で広島に敗戦 <span class="tm">(20時間前)</span></div>
+        <div class="t">巨人マツダの呪い続く 守備の乱れと被弾で広島に敗戦 <span class="tm">(21時間前)</span></div>
         <div class="s">苦手な敵地で失策が重なり連勝が止まる。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f97905d338a16742f75ab4b43de8b1e43d3d31d1?source=rss','巨人マツダの呪い続く 守備の乱れと被弾で広島に敗戦',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/5d246db2c29ce3bd4713e6d0f43254d7231f2be7?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人増田陸が2落球を猛省 プロとして恥ずかしい <span class="tm">(20時間前)</span></div>
+        <div class="t">巨人増田陸が2落球を猛省 プロとして恥ずかしい <span class="tm">(21時間前)</span></div>
         <div class="s">出場機会を得るも自身の拙い守備に沈んだ。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5d246db2c29ce3bd4713e6d0f43254d7231f2be7?source=rss','巨人増田陸が2落球を猛省 プロとして恥ずかしい',this)">📌</div>
@@ -918,43 +870,43 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5e56709ad7b07fc8f66206b4eecd736a583b7677?source=rss','巨人ウィットリーが初黒星 ６回５失点と崩れる',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/8e17bbd3929d9f6728895d4c7da56559eb728fa3?source=rss" class="l-m" target="_blank">
-        <div class="t">【広島】連勝で３位浮上＆貯金１　昨季からマツダの巨人… <span class="tm">(21時間前)</span></div>
+        <div class="t">【広島】連勝で３位浮上＆貯金１　昨季からマツダの巨人… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8e17bbd3929d9f6728895d4c7da56559eb728fa3?source=rss','【広島】連勝で３位浮上＆貯金１　昨季からマツダの巨人…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/9da2e0dafe403fad811ca88a7cdb9891bfe0f374?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人・田中将大、8日の広島戦先発　昨年8月は2回5失… <span class="tm">(21時間前)</span></div>
+        <div class="t">巨人・田中将大、8日の広島戦先発　昨年8月は2回5失… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/9da2e0dafe403fad811ca88a7cdb9891bfe0f374?source=rss','巨人・田中将大、8日の広島戦先発　昨年8月は2回5失…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/23101fc0023ca782826e543eee10bc1287dfd007?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人・キャベッジ、二塁を狙うも…天谷氏「アグレッシブ… <span class="tm">(21時間前)</span></div>
+        <div class="t">巨人・キャベッジ、二塁を狙うも…天谷氏「アグレッシブ… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/23101fc0023ca782826e543eee10bc1287dfd007?source=rss','巨人・キャベッジ、二塁を狙うも…天谷氏「アグレッシブ…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/2b3a8c156513e30b168675e897947be2b027d42a?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人　今年も鬼門マツダで黒星発進　ウィットリー2ラン… <span class="tm">(21時間前)</span></div>
+        <div class="t">巨人　今年も鬼門マツダで黒星発進　ウィットリー2ラン… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/2b3a8c156513e30b168675e897947be2b027d42a?source=rss','巨人　今年も鬼門マツダで黒星発進　ウィットリー2ラン…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/ed1e15556d234bff5280a75b178639dac08e7c2b?source=rss" class="l-m" target="_blank">
-        <div class="t">【巨人】シーズン初戦のマツダでは５連敗　先発ウィット… <span class="tm">(21時間前)</span></div>
+        <div class="t">【巨人】シーズン初戦のマツダでは５連敗　先発ウィット… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/ed1e15556d234bff5280a75b178639dac08e7c2b?source=rss','【巨人】シーズン初戦のマツダでは５連敗　先発ウィット…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/a1a303cec972231b64c1e973b20be1f22d17af32?source=rss" class="l-m" target="_blank">
-        <div class="t">【巨人】ミスミス鬼門の強風マツダで黒星スタート…先発… <span class="tm">(21時間前)</span></div>
+        <div class="t">【巨人】ミスミス鬼門の強風マツダで黒星スタート…先発… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a1a303cec972231b64c1e973b20be1f22d17af32?source=rss','【巨人】ミスミス鬼門の強風マツダで黒星スタート…先発…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/214484676339647a866570305661adb51d6a63c1?source=rss" class="l-m" target="_blank">
-        <div class="t">【阪神】才木浩人がセ・リーグタイ記録の１６奪三振　巨… <span class="tm">(21時間前)</span></div>
+        <div class="t">【阪神】才木浩人がセ・リーグタイ記録の１６奪三振　巨… <span class="tm">(22時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/214484676339647a866570305661adb51d6a63c1?source=rss','【阪神】才木浩人がセ・リーグタイ記録の１６奪三振　巨…',this)">📌</div>
@@ -978,13 +930,13 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3b9986593ee892f129d97efeef37887370757837?source=rss','ウィットリーが6回5失点で敗戦',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/7de9e388ac023e105c436c4a222c921f66e6bf95?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人阿部監督も懸念する誤算 2軍で炎上した主力の現在 <span class="tm">(22時間前)</span></div>
+        <div class="t">巨人阿部監督も懸念する誤算 2軍で炎上した主力の現在 <span class="tm">(23時間前)</span></div>
         <div class="s">被安打10の乱調により開幕1軍入りの望みが消滅</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/7de9e388ac023e105c436c4a222c921f66e6bf95?source=rss','巨人阿部監督も懸念する誤算 2軍で炎上した主力の現在',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/70bd820aa3140249e217b6e201bc04a790b7ad03?source=rss" class="l-m" target="_blank">
-        <div class="t">巨人ウィットリー被弾し4失点 来日初の洗礼を浴びる <span class="tm">(22時間前)</span></div>
+        <div class="t">巨人ウィットリー被弾し4失点 来日初の洗礼を浴びる <span class="tm">(23時間前)</span></div>
         <div class="s">広島戦の5回に2本の本塁打を許し逆転負けを喫す</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/70bd820aa3140249e217b6e201bc04a790b7ad03?source=rss','巨人ウィットリー被弾し4失点 来日初の洗礼を浴びる',this)">📌</div>
@@ -1001,13 +953,11 @@
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5f1acfdd262b5630960a7ff2549c28f9b63f07c8?source=rss','巨人投手が2戦連続被弾 広島ファビアンに痛恨の1発',this)">📌</div>
     </div></div>
-      <div class="more-btn" id="btn-sports" onclick="showMore('sports')">＋ もっと見る (32)</div>
-    </div>
-    </section><section class="card" id="teams">
-      <h2 class="head">🏆 マイチーム</h2>
+      <div class="more-btn" id="btn-sports" onclick="showMore('sports')">＋ もっと見る (36)</div>
+      </div></section><section class="card" id="teams"><h2 class="head">🏆 マイチーム</h2>
       <div class="scroll-box"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/4212b9f1533b19524721c976904d288574af6b0c?source=rss" class="l-m" target="_blank">
-        <div class="t">ブルージェイズ苦境続く / 岡本和真の所属先は６連敗 <span class="tm">(36分前)</span></div>
+        <div class="t">ブルージェイズ苦境続く / 岡本和真の所属先は６連敗 <span class="tm">(1時間前)</span></div>
         <div class="s">主軸捕手の戦線離脱で攻撃力の低下が懸念される。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/4212b9f1533b19524721c976904d288574af6b0c?source=rss','ブルージェイズ苦境続く / 岡本和真の所属先は６連敗',this)">📌</div>
@@ -1026,7 +976,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/d6da9999dcc34a121f729887f2d5eefb66560288?source=rss" class="l-m" target="_blank">
         <div class="t">ブルージェイズ６連敗
-主力の不在響きファン悲鳴 <span class="tm">(4時間前)</span></div>
+主力の不在響きファン悲鳴 <span class="tm">(5時間前)</span></div>
         <div class="s">次戦は大谷翔平と対決へ</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/d6da9999dcc34a121f729887f2d5eefb66560288?source=rss','ブルージェイズ６連敗
@@ -1042,12 +992,13 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/f2513f1e3ebbe7ffc407771334de6e7a2ca064e5?source=rss" class="l-m" target="_blank">
         <div class="t">山本が今季２勝目をマーク
-岡本和真は初二塁打を記録 <span class="tm">(7時間前)</span></div>
+岡本和真は初二塁打を記録 <span class="tm">(8時間前)</span></div>
         <div class="s">ブルージェイズは６連敗。ド軍５連勝。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f2513f1e3ebbe7ffc407771334de6e7a2ca064e5?source=rss','山本が今季２勝目をマーク
 岡本和真は初二塁打を記録',this)">📌</div>
-    </div><div class="item">
+    </div>
+      <div id="more-teams" style="display:none;"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/e124dbd79486ef6b6f004b58d4b495fe0b681bcc?source=rss" class="l-m" target="_blank">
         <div class="t">ブルージェイズ指揮官
 判定に激怒し退場処分 <span class="tm">(8時間前)</span></div>
@@ -1063,11 +1014,10 @@
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a41da26a9c6b6f9e1d1e3d94005609b581f32b49?source=rss','岡本和真が侍対決を制す
 山本由伸から執念の二塁打',this)">📌</div>
-    </div>
-      <div id="more-teams" style="display: none;"><div class="item">
+    </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/01609c8fa6e0e0e52b6ae1712b344b719105191b?source=rss" class="l-m" target="_blank">
         <div class="t">山本由伸と岡本和真が激突
-初対決は由伸が制し二飛に <span class="tm">(9時間前)</span></div>
+初対決は由伸が制し二飛に <span class="tm">(10時間前)</span></div>
         <div class="s">日本人対決は153キロの直球で決着した</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/01609c8fa6e0e0e52b6ae1712b344b719105191b?source=rss','山本由伸と岡本和真が激突
@@ -1075,7 +1025,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/01a2293546ee1bffda13b44469e7783e6987e1e7?source=rss" class="l-m" target="_blank">
         <div class="t">岡本和真が米初対決
-山本由伸から二飛放つ <span class="tm">(9時間前)</span></div>
+山本由伸から二飛放つ <span class="tm">(10時間前)</span></div>
         <div class="s">ＮＰＢ時代は８打数で
 ４安打放つも凡退した</div>
       </a>
@@ -1109,14 +1059,14 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/af62e626e41ec4c970029e901d916e0ed5871f06?source=rss" class="l-m" target="_blank">
         <div class="t">山本由伸と岡本和真が対戦
-１番大谷は４号本塁打狙う <span class="tm">(13時間前)</span></div>
+１番大谷は４号本塁打狙う <span class="tm">(14時間前)</span></div>
         <div class="s">今季２勝目狙う右腕に対し 侍ジャパンの主砲が挑む。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/af62e626e41ec4c970029e901d916e0ed5871f06?source=rss','山本由伸と岡本和真が対戦
 １番大谷は４号本塁打狙う',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/b7d5f14e60410191c06140bb6350f8559ed6b223?source=rss" class="l-m" target="_blank">
-        <div class="t">山本由伸と岡本和真が激突 メジャー初対戦へスタメン <span class="tm">(13時間前)</span></div>
+        <div class="t">山本由伸と岡本和真が激突 メジャー初対戦へスタメン <span class="tm">(14時間前)</span></div>
         <div class="s">ド軍右腕に対し５番起用</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/b7d5f14e60410191c06140bb6350f8559ed6b223?source=rss','山本由伸と岡本和真が激突 メジャー初対戦へスタメン',this)">📌</div>
@@ -1137,13 +1087,11 @@
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/2f026d302e3e2922e6ca8c357ff33982e2d211a3?source=rss','岡本和真９戦ぶりマルチ
 打撃フォームを微調整',this)">📌</div>
     </div></div>
-      <div class="more-btn" id="btn-teams" onclick="showMore('teams')">＋ もっと見る (9)</div>
-    </div>
-    </section><section class="card" id="ai-tech">
-      <h2 class="head">🤖 AI・テクノロジー</h2>
+      <div class="more-btn" id="btn-teams" onclick="showMore('teams')">＋ もっと見る (11)</div>
+      </div></section><section class="card" id="ai-tech"><h2 class="head">🤖 AI・テクノロジー</h2>
       <div class="scroll-box"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/347cfe304246390680248d18a0422bc74a181cee?source=rss" class="l-m" target="_blank">
-        <div class="t">縦タブ機能を正式導入 / Ｇｏｏｇｌｅブラウザ刷新 <span class="tm">(1時間前)</span></div>
+        <div class="t">縦タブ機能を正式導入 / Ｇｏｏｇｌｅブラウザ刷新 <span class="tm">(2時間前)</span></div>
         <div class="s">画面横のスペースを有効活用し視認性を大幅に改善。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/347cfe304246390680248d18a0422bc74a181cee?source=rss','縦タブ機能を正式導入 / Ｇｏｏｇｌｅブラウザ刷新',this)">📌</div>
@@ -1156,7 +1104,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/c5c080baa60ef8acb12f1bb5a78ca2a1afc0e92e?source=rss" class="l-m" target="_blank">
         <div class="t">Ｐｉｘｅｌに限定モデル
-ヘラルボニーと共同製作 <span class="tm">(3時間前)</span></div>
+ヘラルボニーと共同製作 <span class="tm">(4時間前)</span></div>
         <div class="s">日本限定色の青色が登場</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c5c080baa60ef8acb12f1bb5a78ca2a1afc0e92e?source=rss','Ｐｉｘｅｌに限定モデル
@@ -1164,7 +1112,7 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/da0a415853a2fdd0b67f63641f0f0f23ca2060e3?source=rss" class="l-m" target="_blank">
         <div class="t">ＡＩが重大な脆弱性発見
-悪用懸念でモデル非公開 <span class="tm">(3時間前)</span></div>
+悪用懸念でモデル非公開 <span class="tm">(4時間前)</span></div>
         <div class="s">全主要ＯＳで欠陥を検知</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/da0a415853a2fdd0b67f63641f0f0f23ca2060e3?source=rss','ＡＩが重大な脆弱性発見
@@ -1180,12 +1128,13 @@
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/fde89a06b67e57691d6360f81d251bedb4906a94?source=rss" class="l-m" target="_blank">
         <div class="t">クロームに垂直タブ登場
-全ユーザーへ順次提供開始 <span class="tm">(8時間前)</span></div>
+全ユーザーへ順次提供開始 <span class="tm">(9時間前)</span></div>
         <div class="s">画面横の整理術。表示効率が大幅にアップ。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/fde89a06b67e57691d6360f81d251bedb4906a94?source=rss','クロームに垂直タブ登場
 全ユーザーへ順次提供開始',this)">📌</div>
-    </div><div class="item">
+    </div>
+      <div id="more-ai-tech" style="display:none;"><div class="item">
       <a href="https://news.yahoo.co.jp/articles/cea2b2a059963c7d4753c9c86745ab60e0ba08f2?source=rss" class="l-m" target="_blank">
         <div class="t">最強ＡＩの一般公開見送り
 アンスロピック社が異例判断 <span class="tm">(9時間前)</span></div>
@@ -1202,11 +1151,10 @@
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/01aeb045fe5e06de692fc31a9d3a2a75c301408b?source=rss','クロード新モデル案
 競合他社を凌駕する性能',this)">📌</div>
-    </div>
-      <div id="more-ai-tech" style="display: none;"><div class="item">
+    </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/18d953a7753e49bc1ef596fbf5b4d9d367f55c15?source=rss" class="l-m" target="_blank">
         <div class="t">インテルとマスク氏
-次世代チップ量産支援 <span class="tm">(10時間前)</span></div>
+次世代チップ量産支援 <span class="tm">(11時間前)</span></div>
         <div class="s">テラファブ構想に参画
 テスラ向け供給を整備</div>
       </a>
@@ -1222,25 +1170,25 @@
 手書きの小論文を即座添削',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/d0a2bdb4b26975424be52e250a325cff12473b1d?source=rss" class="l-m" target="_blank">
-        <div class="t">AI時代に改めて問う「DX人材育成の勘所」　デルの取… <span class="tm">(19時間前)</span></div>
+        <div class="t">AI時代に改めて問う「DX人材育成の勘所」　デルの取… <span class="tm">(20時間前)</span></div>
         <div class="s">詳細はこちら</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/d0a2bdb4b26975424be52e250a325cff12473b1d?source=rss','AI時代に改めて問う「DX人材育成の勘所」　デルの取…',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/13cb39fcdf0ea647700e6a83e062b2dc40181968?source=rss" class="l-m" target="_blank">
-        <div class="t">米ディズニーでAIオラフが気絶 不具合で一時騒然 <span class="tm">(20時間前)</span></div>
+        <div class="t">米ディズニーでAIオラフが気絶 不具合で一時騒然 <span class="tm">(21時間前)</span></div>
         <div class="s">導入された自律型ロボが公開中に停止した。</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/13cb39fcdf0ea647700e6a83e062b2dc40181968?source=rss','米ディズニーでAIオラフが気絶 不具合で一時騒然',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/44e5ec8b3fc79503417356f2c96c4526b65c1c3d?source=rss" class="l-m" target="_blank">
-        <div class="t">中国語学習AIに瞬発対話機能 LINEで音声練習が可能 <span class="tm">(22時間前)</span></div>
+        <div class="t">中国語学習AIに瞬発対話機能 LINEで音声練習が可能 <span class="tm">(23時間前)</span></div>
         <div class="s">リアルタイムな応答で実践的な発話力を向上させる</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/44e5ec8b3fc79503417356f2c96c4526b65c1c3d?source=rss','中国語学習AIに瞬発対話機能 LINEで音声練習が可能',this)">📌</div>
     </div><div class="item">
       <a href="https://news.yahoo.co.jp/articles/41f6715c7cef30760f06b29b9b48eadc7b7c685c?source=rss" class="l-m" target="_blank">
-        <div class="t">楽天カードがAIチャット導入 顧客への回答を1分短縮 <span class="tm">(22時間前)</span></div>
+        <div class="t">楽天カードがAIチャット導入 顧客への回答を1分短縮 <span class="tm">(23時間前)</span></div>
         <div class="s">自動化により24時間体制のサポート効率を改善</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/41f6715c7cef30760f06b29b9b48eadc7b7c685c?source=rss','楽天カードがAIチャット導入 顧客への回答を1分短縮',this)">📌</div>
@@ -1250,19 +1198,6 @@
         <div class="s">モデル同士の対話でプログラムの不備を即座に特定</div>
       </a>
       <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5e87bd783e2f47c4cca3ff9dbcbe6135ae101176?source=rss','AIが他モデルの作業を批判 開発支援ツールに新機能',this)">📌</div>
-    </div><div class="item">
-      <a href="https://news.yahoo.co.jp/articles/3186baf5d3b8ce145f7a080db80c56388034c6c6?source=rss" class="l-m" target="_blank">
-        <div class="t">経営層特化のAI秘書が公開 意思決定の精度向上へ <span class="tm">(23時間前)</span></div>
-        <div class="s">試作版の提供により多忙な役員の業務負担を削減</div>
-      </a>
-      <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/3186baf5d3b8ce145f7a080db80c56388034c6c6?source=rss','経営層特化のAI秘書が公開 意思決定の精度向上へ',this)">📌</div>
-    </div><div class="item">
-      <a href="https://news.yahoo.co.jp/articles/79733b4f61621d5111f3985a912f8b5eb382ca2a?source=rss" class="l-m" target="_blank">
-        <div class="t">AIが共謀し人間に嘘を付く 研究で判明した危険な挙動 <span class="tm">(23時間前)</span></div>
-        <div class="s">互いを庇う独自の判断基準が暴走を招く懸念がある</div>
-      </a>
-      <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/79733b4f61621d5111f3985a912f8b5eb382ca2a?source=rss','AIが共謀し人間に嘘を付く 研究で判明した危険な挙動',this)">📌</div>
     </div></div>
       <div class="more-btn" id="btn-ai-tech" onclick="showMore('ai-tech')">＋ もっと見る (9)</div>
-    </div>
-    </section></div></body></html>
+      </div></section></div></body></html>
