@@ -1,28 +1,21 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <style>
-    /* モバイル・Watch用 (基本デザイン) */
     body { background: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 5px; }
     .grid { display: flex; flex-direction: column; gap: 20px; }
     .card { background: transparent; border: none; padding: 0; }
     .head { font-size: 1.1rem; font-weight: 900; margin: 0 0 10px 0; border-bottom: 2px solid #333; padding-bottom: 5px; color: #fff; }
-    
     .empty { color: #666; font-size: 0.9rem; text-align: center; padding: 20px 0; font-weight: bold; }
     .item-list { display: flex; flex-direction: column; }
     .item { display: flex; border-bottom: 1px solid #1a1a1a; padding: 8px 0; }
-    
-    /* 初期表示の制御 (Watch: 6件, PC: 8件) */
     .item-list:not(.show-all) .hide-on-watch { display: none; }
     .item-list:not(.show-all) .hide-default { display: none; }
-
     .l-m { flex: 1; text-decoration: none; padding-right: 5px; }
     .t { font-size: 1.05rem; font-weight: 900; color: #33b5e5; line-height: 1.4; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .tm { font-size: 0.8rem; color: #999; margin-left: 6px; white-space: nowrap; font-weight: normal; }
     .s { font-size: 0.9rem; color: #ccc; font-weight: 500; line-height: 1.3; }
     .b-p { display: flex; align-items: center; justify-content: center; color: #ffcc00; width: 44px; cursor: pointer; border-left: 1px solid #222; font-size: 1.2rem; user-select: none; }
     .more-btn { text-align: center; padding: 12px; color: #33b5e5; font-size: 0.9rem; font-weight: bold; cursor: pointer; background: #1a1a1a; border-radius: 8px; margin-top: 10px; user-select: none; }
-    
-    /* PC・タブレット用 (900px以上) */
     @media (min-width: 900px) { 
       body { padding: 20px; } 
       .grid { display: grid; grid-template-columns: repeat(5, 1fr); align-items: start; gap: 15px; } 
@@ -31,8 +24,6 @@
       .item-list { overflow-y: auto; flex-grow: 1; padding-right: 5px; }
       .item-list::-webkit-scrollbar { width: 4px; }
       .item-list::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
-      
-      /* PCでは8件目まで表示 */
       .item-list:not(.show-all) .hide-on-watch { display: flex; }
     }
   </style>
@@ -44,7 +35,7 @@
       document.getElementById('btn-'+id).style.display='none'; 
     }
   </script></head><body>
-  <div style="text-align:right;font-size:12px;color:#888;margin-bottom:10px;font-weight:bold;">最終更新: 04/09 19:09</div>
+  <div style="text-align:right;font-size:12px;color:#888;margin-bottom:10px;font-weight:bold;">最終更新: 04/09 19:10</div>
   <div class="grid"><section class="card" id="major"><h2 class="head">🌍 主要ニュース</h2>
       <div class="item-list" id="list-major">
         <div class="item">
@@ -137,36 +128,6 @@
           <div class="s">気象庁が14日にかけての雨風に警戒を呼びかけ</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5e6ff36303ab8722ba6393ec72ef1e2aea3e1801?source=rss','日本の南で台風のたまご発生し今後発達の見込み',this)">📌</div>
-      </div><div class="item hide-default">
-        <a href="https://news.yahoo.co.jp/articles/d01057524c558eb1078aa96597a59e3b348bcefe?source=rss" class="l-m" target="_blank">
-          <div class="t">新名神6人死亡事故でトラック運転手の女を起訴 <span class="tm">(5時間前)</span></div>
-          <div class="s">携帯画面への脇見が原因で時速82キロ走行</div>
-        </a>
-        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/d01057524c558eb1078aa96597a59e3b348bcefe?source=rss','新名神6人死亡事故でトラック運転手の女を起訴',this)">📌</div>
-      </div><div class="item hide-default">
-        <a href="https://news.yahoo.co.jp/articles/741b1f0d89e9ac7ecdef71930330302efa106d4d?source=rss" class="l-m" target="_blank">
-          <div class="t">売買春の規制強化で買う側の罰則議論が本格化へ <span class="tm">(5時間前)</span></div>
-          <div class="s">路上勧誘の社会問題化を受け法務省が検討</div>
-        </a>
-        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/741b1f0d89e9ac7ecdef71930330302efa106d4d?source=rss','売買春の規制強化で買う側の罰則議論が本格化へ',this)">📌</div>
-      </div><div class="item hide-default">
-        <a href="https://news.yahoo.co.jp/articles/eb9a16eaad54e1da222d6c904b70c7461fd8c93d?source=rss" class="l-m" target="_blank">
-          <div class="t">OpenAIが児童搾取防ぐ新指針で子供の安全を保護 <span class="tm">(5時間前)</span></div>
-          <div class="s">AI悪用を阻止し中核的な安全策を導入へ</div>
-        </a>
-        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/eb9a16eaad54e1da222d6c904b70c7461fd8c93d?source=rss','OpenAIが児童搾取防ぐ新指針で子供の安全を保護',this)">📌</div>
-      </div><div class="item hide-default">
-        <a href="https://news.yahoo.co.jp/articles/83c0564bfc505a23a72b390201f31b396b3e2781?source=rss" class="l-m" target="_blank">
-          <div class="t">東国原英夫氏が宮崎県知事選に出馬表明 <span class="tm">(7時間前)</span></div>
-          <div class="s">68歳での決意を全文公開</div>
-        </a>
-        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/83c0564bfc505a23a72b390201f31b396b3e2781?source=rss','東国原英夫氏が宮崎県知事選に出馬表明',this)">📌</div>
-      </div><div class="item hide-default">
-        <a href="https://news.yahoo.co.jp/articles/a0a75ba39de53e2dca0ebad7aff482731256dae1?source=rss" class="l-m" target="_blank">
-          <div class="t">東北新幹線で停電による遅延発生 <span class="tm">(7時間前)</span></div>
-          <div class="s">カラスの架線接触が原因か</div>
-        </a>
-        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/a0a75ba39de53e2dca0ebad7aff482731256dae1?source=rss','東北新幹線で停電による遅延発生',this)">📌</div>
       </div>
       </div>
       <div class="more-btn" id="btn-major" onclick="showMore('major')">＋ もっと見る</div>
@@ -278,12 +239,6 @@
           <div class="s">宮脇咲良が下積み時代の苦悩を赤裸々に吐露。</div>
         </a>
         <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/e3408f2aa5cef82d8616b1108c01a7e23afee1d3?source=rss','LE SSERAFIMサクラが過去告白 3度目デビュー秘話',this)">📌</div>
-      </div><div class="item hide-default">
-        <a href="https://news.yahoo.co.jp/articles/578d7598bd18dd0b2938103d398f3dd3acd16625?source=rss" class="l-m" target="_blank">
-          <div class="t">4月のU-NEXT注目作品が解禁 <span class="tm">(1日前)</span></div>
-          <div class="s">ピュー主演の独占映画など続々登場</div>
-        </a>
-        <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/578d7598bd18dd0b2938103d398f3dd3acd16625?source=rss','4月のU-NEXT注目作品が解禁',this)">📌</div>
       </div>
       </div>
       <div class="more-btn" id="btn-stars" onclick="showMore('stars')">＋ もっと見る</div>
