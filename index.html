@@ -31,20 +31,34 @@
       document.getElementById('btn-'+id).style.display='none'; 
     }
   </script></head><body>
-  <div style="text-align:right;font-size:12px;color:#888;margin-bottom:10px;font-weight:bold;">最終更新: 08/03 08:26</div>
+  <div style="text-align:right;font-size:12px;color:#888;margin-bottom:10px;font-weight:bold;">最終更新: 08/03 08:56</div>
   <div class="grid"><section class="card" id="major"><h2 class="head">🌍 主要ニュース</h2>
       <div class="item-list" id="list-major">
         
           <div class="item ">
+            <a href="https://news.yahoo.co.jp/articles/4e9acceba0886e0abefc38a16cc9344529bd6955?source=rss" class="l-m" target="_blank">
+              <div class="t" style="color: #33b5e5;">台風13号、高波に警戒を　小笠原諸島接近後、沖縄へ <span class="tm">(5分前)</span></div>
+              <div class="s">台風13号が小笠原から沖縄へ接近中。</div>
+            </a>
+            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/4e9acceba0886e0abefc38a16cc9344529bd6955?source=rss','台風13号、高波に警戒を　小笠原諸島接近後、沖縄へ',this)">📌</div>
+          </div>
+          <div class="item ">
+            <a href="https://news.yahoo.co.jp/articles/517bb71ad5233cc4849bb9290fb3d13f6570be94?source=rss" class="l-m" target="_blank">
+              <div class="t" style="color: #33b5e5;">地震で転倒か 女子高校生が死亡 <span class="tm">(16分前)</span></div>
+              <div class="s">地震による転倒で女子高校生が死亡した。</div>
+            </a>
+            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/517bb71ad5233cc4849bb9290fb3d13f6570be94?source=rss','地震で転倒か 女子高校生が死亡',this)">📌</div>
+          </div>
+          <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/8a3c6c2edfd800b22de93a13309b8ebf3b660390?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">熊本地震で女子高校生が死亡 <span class="tm">(4分前)</span></div>
+              <div class="t" style="color: #33b5e5;">熊本地震で女子高校生が死亡 <span class="tm">(34分前)</span></div>
               <div class="s">転倒して首を負傷か</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8a3c6c2edfd800b22de93a13309b8ebf3b660390?source=rss','熊本地震で女子高校生が死亡',this)">📌</div>
           </div>
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/5063346128a4a919e09fe9447e5eb4f5a70548ce?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">介護難民400万人時代の衝撃 <span class="tm">(25分前)</span></div>
+              <div class="t" style="color: #33b5e5;">介護難民400万人時代の衝撃 <span class="tm">(55分前)</span></div>
               <div class="s">半数が介護を受けられず</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5063346128a4a919e09fe9447e5eb4f5a70548ce?source=rss','介護難民400万人時代の衝撃',this)">📌</div>
@@ -63,14 +77,14 @@
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/7fc480c8e77fe7d9f2bd14490ee7094322d3f108?source=rss','西日本は危険な暑さに警戒　関東は猛暑落ち着く',this)">📌</div>
           </div>
-          <div class="item ">
+          <div class="item hide-default">
             <a href="https://news.yahoo.co.jp/articles/89f07b54805d5d29c014fc370a832d3a2bd9bc68?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">忍術で学ぶ防災教室 三重・津市 <span class="tm">(1時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">忍術で学ぶ防災教室 三重・津市 <span class="tm">(2時間前)</span></div>
               <div class="s">災害を生き残る知識</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/89f07b54805d5d29c014fc370a832d3a2bd9bc68?source=rss','忍術で学ぶ防災教室 三重・津市',this)">📌</div>
           </div>
-          <div class="item ">
+          <div class="item hide-default">
             <a href="https://news.yahoo.co.jp/articles/408e3dbcf3c816116b4c7dc5dd97ff1bc3ef012d?source=rss" class="l-m" target="_blank">
               <div class="t" style="color: #33b5e5;">愛知と岐阜でゲリラ豪雨　非常に激しい雨を観測 <span class="tm">(2時間前)</span></div>
               <div class="s">名古屋では倒木も</div>
@@ -79,31 +93,17 @@
           </div>
           <div class="item hide-default">
             <a href="https://news.yahoo.co.jp/articles/2e9e91425ec4e0e44adca0e97e0ba297400da721?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">被災者の避難生活続く　薬や子育て支援が拡大 <span class="tm">(2時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">被災者の避難生活続く　薬や子育て支援が拡大 <span class="tm">(3時間前)</span></div>
               <div class="s">必要物資の提供広がる</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/2e9e91425ec4e0e44adca0e97e0ba297400da721?source=rss','被災者の避難生活続く　薬や子育て支援が拡大',this)">📌</div>
           </div>
           <div class="item hide-default">
             <a href="https://news.yahoo.co.jp/articles/01ccb4bd29a327ab0c3944f99d409be1693a8f74?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">イオンモール熊本爆発事故で女性死亡　遺族に謝罪 <span class="tm">(2時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">イオンモール熊本爆発事故で女性死亡　遺族に謝罪 <span class="tm">(3時間前)</span></div>
               <div class="s">店側が避難指示怠る</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/01ccb4bd29a327ab0c3944f99d409be1693a8f74?source=rss','イオンモール熊本爆発事故で女性死亡　遺族に謝罪',this)">📌</div>
-          </div>
-          <div class="item hide-default">
-            <a href="https://news.yahoo.co.jp/articles/70e2614a25f6182ccd06c8c9271fef7360740753?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">熊本で車中泊の女性が死亡 <span class="tm">(2時間前)</span></div>
-              <div class="s">熱中症の可能性で調査</div>
-            </a>
-            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/70e2614a25f6182ccd06c8c9271fef7360740753?source=rss','熊本で車中泊の女性が死亡',this)">📌</div>
-          </div>
-          <div class="item hide-default">
-            <a href="https://news.yahoo.co.jp/articles/1f1469f5c7f5ee9efdcc1ce3b77d80f38c15ccf0?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">台風13号が小笠原へ最接近 <span class="tm">(2時間前)</span></div>
-              <div class="s">4日に最接近、警戒必要</div>
-            </a>
-            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/1f1469f5c7f5ee9efdcc1ce3b77d80f38c15ccf0?source=rss','台風13号が小笠原へ最接近',this)">📌</div>
           </div>
       </div>
       <div class="more-btn" id="btn-major" onclick="showMore('major')">＋ もっと見る</div>
@@ -119,7 +119,7 @@
           </div>
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/9144e467786ea1cf61b7f1adb5a508be1f223750?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">BABYMONSTER「MOON」新ポスター解禁 <span class="tm">(15時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">BABYMONSTER「MOON」新ポスター解禁 <span class="tm">(16時間前)</span></div>
               <div class="s">収録曲のMV公開控え新画像を解禁</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/9144e467786ea1cf61b7f1adb5a508be1f223750?source=rss','BABYMONSTER「MOON」新ポスター解禁',this)">📌</div>
@@ -187,14 +187,14 @@
         
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/f27254c521fc0d7254da322a91f804c733a36ac3?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">巨人橋上代行が小笠原に謝罪 <span class="tm">(14時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">巨人橋上代行が小笠原に謝罪 <span class="tm">(15時間前)</span></div>
               <div class="s">孤軍奮闘の投手をねぎらう</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/f27254c521fc0d7254da322a91f804c733a36ac3?source=rss','巨人橋上代行が小笠原に謝罪',this)">📌</div>
           </div>
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/be3b83a202c59ba94be959488010c824b8b8c4b1?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">巨人・小笠原が粘投もDeNAに敗れ連敗 <span class="tm">(15時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">巨人・小笠原が粘投もDeNAに敗れ連敗 <span class="tm">(16時間前)</span></div>
               <div class="s">好機活かせず6カードぶり負け越し</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/be3b83a202c59ba94be959488010c824b8b8c4b1?source=rss','巨人・小笠原が粘投もDeNAに敗れ連敗',this)">📌</div>
@@ -236,7 +236,7 @@
           </div>
           <div class="item hide-default">
             <a href="https://news.yahoo.co.jp/articles/df19c926a8c08ba7d970f47e638b3ce55dc5d85a?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">巨人・又木鉄平が1軍に再合流 <span class="tm">(22時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">巨人・又木鉄平が1軍に再合流 <span class="tm">(23時間前)</span></div>
               <div class="s">試合前練習から姿を見せる</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/df19c926a8c08ba7d970f47e638b3ce55dc5d85a?source=rss','巨人・又木鉄平が1軍に再合流',this)">📌</div>
@@ -262,7 +262,7 @@
         
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/e7b2af08eec57cf16798c7a3547502ac862e3747?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;"><span style="color:#ffcc00; font-size:0.8rem;">★</span>ブルージェイズ八回追いつくも敗戦 <span class="tm">(2時間前)</span></div>
+              <div class="t" style="color: #33b5e5;"><span style="color:#ffcc00; font-size:0.8rem;">★</span>ブルージェイズ八回追いつくも敗戦 <span class="tm">(3時間前)</span></div>
               <div class="s">岡本は4打数1安打</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/e7b2af08eec57cf16798c7a3547502ac862e3747?source=rss','ブルージェイズ八回追いつくも敗戦',this)">📌</div>
@@ -337,42 +337,56 @@
         
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/2597a554632ee3255c4a260b80fe02708973b7c9?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">東芝が国産迎撃ドローン開発 <span class="tm">(7分前)</span></div>
+              <div class="t" style="color: #33b5e5;">東芝が国産迎撃ドローン開発 <span class="tm">(37分前)</span></div>
               <div class="s">スタートアップと共同で</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/2597a554632ee3255c4a260b80fe02708973b7c9?source=rss','東芝が国産迎撃ドローン開発',this)">📌</div>
           </div>
           <div class="item ">
+            <a href="https://news.yahoo.co.jp/articles/c153bcfbed88c80a3673dff7850c4f8e106217b6?source=rss" class="l-m" target="_blank">
+              <div class="t" style="color: #33b5e5;">AIが現実世界を動かし始めた衝撃 <span class="tm">(51分前)</span></div>
+              <div class="s">AIがフィジカルな実社会に進出し始める。</div>
+            </a>
+            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/c153bcfbed88c80a3673dff7850c4f8e106217b6?source=rss','AIが現実世界を動かし始めた衝撃',this)">📌</div>
+          </div>
+          <div class="item ">
+            <a href="https://news.yahoo.co.jp/articles/6f410bc9bea6b9fd1c657d8e87ecdac907329f74?source=rss" class="l-m" target="_blank">
+              <div class="t" style="color: #33b5e5;">X68000用FDD制御ユニット「ふろっぴU君」 <span class="tm">(51分前)</span></div>
+              <div class="s">レトロPC向け新ユニットが登場した。</div>
+            </a>
+            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/6f410bc9bea6b9fd1c657d8e87ecdac907329f74?source=rss','X68000用FDD制御ユニット「ふろっぴU君」',this)">📌</div>
+          </div>
+          <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/760de2ca6cf60d1dad1eba5ee851f333c82efb1a?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">無料AIのKimi K3を検証 <span class="tm">(26分前)</span></div>
+              <div class="t" style="color: #33b5e5;">無料AIのKimi K3を検証 <span class="tm">(56分前)</span></div>
               <div class="s">業界揺らす新モデル実力</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/760de2ca6cf60d1dad1eba5ee851f333c82efb1a?source=rss','無料AIのKimi K3を検証',this)">📌</div>
           </div>
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/ed2142fac6661fbd231b71d29adc186b1d02de1e?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">Claudeが他社システムに不正侵入と報道 <span class="tm">(50分前)</span></div>
+              <div class="t" style="color: #33b5e5;">Claudeが他社システムに不正侵入と報道 <span class="tm">(1時間前)</span></div>
               <div class="s">AIによるセキュリティ問題が懸念されている。</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/ed2142fac6661fbd231b71d29adc186b1d02de1e?source=rss','Claudeが他社システムに不正侵入と報道',this)">📌</div>
           </div>
           <div class="item ">
             <a href="https://news.yahoo.co.jp/articles/733aec582f39db3a2f9bb92fb0d021262d464524?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">OpenAIが次期モデル「Astra」の存在を発表 <span class="tm">(50分前)</span></div>
+              <div class="t" style="color: #33b5e5;">OpenAIが次期モデル「Astra」の存在を発表 <span class="tm">(1時間前)</span></div>
               <div class="s">未解決の数学問題１０件を解決したと発表。</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/733aec582f39db3a2f9bb92fb0d021262d464524?source=rss','OpenAIが次期モデル「Astra」の存在を発表',this)">📌</div>
           </div>
-          <div class="item ">
+          <div class="item hide-default">
             <a href="https://news.yahoo.co.jp/articles/5c91d94037df581d46725c04fc03aa7f825089da?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">新型iPhone品薄の可能性か <span class="tm">(1時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">新型iPhone品薄の可能性か <span class="tm">(2時間前)</span></div>
               <div class="s">供給制約の影響を警告</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/5c91d94037df581d46725c04fc03aa7f825089da?source=rss','新型iPhone品薄の可能性か',this)">📌</div>
           </div>
-          <div class="item ">
+          <div class="item hide-default">
             <a href="https://news.yahoo.co.jp/articles/54d255fcf885b9bd73c9dcaf9100fd0695097c31?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">ChatGPT登場で生成AIブーム <span class="tm">(1時間前)</span></div>
+              <div class="t" style="color: #33b5e5;">ChatGPT登場で生成AIブーム <span class="tm">(2時間前)</span></div>
               <div class="s">当時の話題などを振り返る</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/54d255fcf885b9bd73c9dcaf9100fd0695097c31?source=rss','ChatGPT登場で生成AIブーム',this)">📌</div>
@@ -390,20 +404,6 @@
               <div class="s">中間報告が明かされる</div>
             </a>
             <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/8837a469412394ff15f7db6c088ef8fd700609b7?source=rss','Windows11は8GBで快適になるか　品質向上の取り組み',this)">📌</div>
-          </div>
-          <div class="item hide-default">
-            <a href="https://news.yahoo.co.jp/articles/1dd40de01a186441d500cdfcb069ba84b799732a?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">AIモデル進化で企業が警戒すべきセキュリティ <span class="tm">(2時間前)</span></div>
-              <div class="s">専門家がリスクを解説</div>
-            </a>
-            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/1dd40de01a186441d500cdfcb069ba84b799732a?source=rss','AIモデル進化で企業が警戒すべきセキュリティ',this)">📌</div>
-          </div>
-          <div class="item hide-default">
-            <a href="https://news.yahoo.co.jp/articles/1f4c19f3b9ab72e2e43c07b572c6a323d1e07a43?source=rss" class="l-m" target="_blank">
-              <div class="t" style="color: #33b5e5;">2スロット厚のRTX 5070 Ti Slim登場 <span class="tm">(8時間前)</span></div>
-              <div class="s">30cm切りの小型グラボ</div>
-            </a>
-            <div class="b-p" onclick="savePin('https://news.yahoo.co.jp/articles/1f4c19f3b9ab72e2e43c07b572c6a323d1e07a43?source=rss','2スロット厚のRTX 5070 Ti Slim登場',this)">📌</div>
           </div>
       </div>
       <div class="more-btn" id="btn-ai-tech" onclick="showMore('ai-tech')">＋ もっと見る</div>
